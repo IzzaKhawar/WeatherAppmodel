@@ -8,77 +8,77 @@
 import SwiftUI
 
 struct WeatherView: View {
-   
+    var modelData: Model?
     var body: some View {
-            VStack{
+        VStack{
+            if let model = modelData {
                 VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, content:{
-                    Text("Lahore")
+                    Text(model.name)
                         .font(.system(size: 40))
                         .fontWeight(.bold)
-                    Text("37˚")
-                        .font(.system(size: 110))
+                    Text(model.temp)
+                        .font(.system(size: 54))
                         .fontWeight(.regular)
-                    Text("Mostly Sunny")
+                    Text(model.main)
                         .font(.title2)
-                    Text("H:37˚ L:27˚")
+                    Text("H:\(model.temp_max) L:\(model.temp_min)")
                         .font(.title2)
                 })
                 
                 VStack(alignment:.leading ,content: {
                     Form{
                         
-                        Text("Sunny conditions will continue for the rest of the day")
+                        Text(model.description)
                             .padding([.top, .leading, .trailing])
                             .font(.subheadline)
                             .foregroundColor(.white)
                         Divider()
                             .background(Color.white)
                             .bold()
-                            .padding()
                         ScrollView(.horizontal) {
                             HStack {
                                 VStack{
-                                    Text("4 PM")
+                                    Text("6 PM")
                                     Image(systemName:"sun.max.fill")
                                         .foregroundColor(.yellow)
-                                    Text("37˚")
+                                    Text(model.temp)
+                                }
+                                .padding(.all)
+                                VStack{
+                                    Text("7 PM")
+                                    Image(systemName:"sun.max.fill")
+                                        .foregroundColor(.yellow)
+                                    Text(model.temp)
+                                }
+                                .padding(.all)
+                                VStack{
+                                    Text("8 PM")
+                                    Image(systemName:"sun.max.fill")
+                                        .foregroundColor(.yellow)
+                                    Text(model.temp)
+                                }
+                                .padding(.all)
+                                VStack{
+                                    Text("9 PM")
+                                    Image(systemName:"sun.max.fill")
+                                        .foregroundColor(.yellow)
+                                    Text(model.temp)
                                 }
                                 .padding(.all)
                                 VStack{
                                     Text("4 PM")
                                     Image(systemName:"sun.max.fill")
                                         .foregroundColor(.yellow)
-                                    Text("37˚")
-                                }
-                                .padding(.all)
-                                VStack{
-                                    Text("4 PM")
-                                    Image(systemName:"sun.max.fill")
-                                        .foregroundColor(.yellow)
-                                    Text("37˚")
-                                }
-                                .padding(.all)
-                                VStack{
-                                    Text("4 PM")
-                                    Image(systemName:"sun.max.fill")
-                                        .foregroundColor(.yellow)
-                                    Text("37˚")
-                                }
-                                .padding(.all)
-                                VStack{
-                                    Text("4 PM")
-                                    Image(systemName:"sun.max.fill")
-                                        .foregroundColor(.yellow)
-                                    Text("37˚")
+                                    Text(model.temp)
                                 }
                                 .padding(.all)
                                 
                             }
                             
                             
-                            }
-                        
                         }
+                        
+                    }
                     .background(Color(hue: 0.989, saturation: 0.035, brightness: 0.277, opacity: 0.368))
                     .formStyle(.columns)
                     .scrollContentBackground(.hidden)
@@ -97,11 +97,11 @@ struct WeatherView: View {
                             Text("10-Day Forecast")
                                 .font(.headline)
                                 .foregroundColor(Color("Gray"))
-                                
+                            
                         }
-                            .padding([.top, .leading, .trailing])
-                            .font(.subheadline)
-                           
+                        .padding([.top, .leading, .trailing])
+                        .font(.subheadline)
+                        
                         Divider()
                             .background(Color.white)
                             .bold()
@@ -110,21 +110,21 @@ struct WeatherView: View {
                                 HStack{
                                     Text("Today")
                                     Spacer()
-                                        .frame(width: 45.0, height: 4.0)
+                                        .frame(width: 35.0, height: 4.0)
                                     Image(systemName:"sun.max.fill")
                                         .foregroundColor(.yellow)
                                     Spacer()
-                                        .frame(width: 45.0, height: 4.0)
-                                    Text("37˚")
+                                        .frame(width: 20.0, height: 4.0)
+                                    Text(model.temp_min)
                                     Spacer()
-                                        .frame(width: 15.0, height: 4.0)
+                                        .frame(width: 10.0, height: 4.0)
                                     Rectangle()
                                         .fill(Color.orange)
-                                        .frame(width: 80.0, height: 4.0)
+                                        .frame(width: 50.0, height: 4.0)
                                         .cornerRadius(5)
                                     Spacer()
-                                        .frame(width: 15.0, height: 4.0)
-                                    Text("37˚")
+                                        .frame(width: 10.0, height: 4.0)
+                                    Text(model.temp_max)
                                 }
                                 .padding()
                                 Divider()
@@ -133,21 +133,21 @@ struct WeatherView: View {
                                 HStack{
                                     Text("Today")
                                     Spacer()
-                                        .frame(width: 45.0, height: 4.0)
+                                        .frame(width: 35.0, height: 4.0)
                                     Image(systemName:"sun.max.fill")
                                         .foregroundColor(.yellow)
                                     Spacer()
-                                        .frame(width: 45.0, height: 4.0)
-                                    Text("37˚")
+                                        .frame(width: 20.0, height: 4.0)
+                                    Text(model.temp_min)
                                     Spacer()
-                                        .frame(width: 15.0, height: 4.0)
+                                        .frame(width: 10.0, height: 4.0)
                                     Rectangle()
                                         .fill(Color.orange)
-                                        .frame(width: 80.0, height: 4.0)
+                                        .frame(width: 50.0, height: 4.0)
                                         .cornerRadius(5)
                                     Spacer()
-                                        .frame(width: 15.0, height: 4.0)
-                                    Text("37˚")
+                                        .frame(width: 10.0, height: 4.0)
+                                    Text(model.temp_max)
                                 }
                                 .padding()
                                 Divider()
@@ -155,21 +155,21 @@ struct WeatherView: View {
                                 HStack{
                                     Text("Today")
                                     Spacer()
-                                        .frame(width: 45.0, height: 4.0)
+                                        .frame(width: 35.0, height: 4.0)
                                     Image(systemName:"sun.max.fill")
                                         .foregroundColor(.yellow)
                                     Spacer()
-                                        .frame(width: 45.0, height: 4.0)
-                                    Text("37˚")
+                                        .frame(width: 20.0, height: 4.0)
+                                    Text(model.temp_min)
                                     Spacer()
-                                        .frame(width: 15.0, height: 4.0)
+                                        .frame(width: 10.0, height: 4.0)
                                     Rectangle()
                                         .fill(Color.orange)
-                                        .frame(width: 80.0, height: 4.0)
+                                        .frame(width: 50.0, height: 4.0)
                                         .cornerRadius(5)
                                     Spacer()
-                                        .frame(width: 15.0, height: 4.0)
-                                    Text("37˚")
+                                        .frame(width: 10.0, height: 4.0)
+                                    Text(model.temp_max)
                                 }
                                 .padding()
                                 Divider()
@@ -177,21 +177,21 @@ struct WeatherView: View {
                                 HStack{
                                     Text("Today")
                                     Spacer()
-                                        .frame(width: 45.0, height: 4.0)
+                                        .frame(width: 35.0, height: 4.0)
                                     Image(systemName:"sun.max.fill")
                                         .foregroundColor(.yellow)
                                     Spacer()
-                                        .frame(width: 45.0, height: 4.0)
-                                    Text("37˚")
+                                        .frame(width: 20.0, height: 4.0)
+                                    Text(model.temp_min)
                                     Spacer()
-                                        .frame(width: 15.0, height: 4.0)
+                                        .frame(width: 10.0, height: 4.0)
                                     Rectangle()
                                         .fill(Color.orange)
-                                        .frame(width: 80.0, height: 4.0)
+                                        .frame(width: 50.0, height: 4.0)
                                         .cornerRadius(5)
                                     Spacer()
-                                        .frame(width: 15.0, height: 4.0)
-                                    Text("37˚")
+                                        .frame(width: 10.0, height: 4.0)
+                                    Text(model.temp_max)
                                 }
                                 .padding()
                                 Divider()
@@ -199,21 +199,21 @@ struct WeatherView: View {
                                 HStack{
                                     Text("Today")
                                     Spacer()
-                                        .frame(width: 45.0, height: 4.0)
+                                        .frame(width: 35.0, height: 4.0)
                                     Image(systemName:"sun.max.fill")
                                         .foregroundColor(.yellow)
                                     Spacer()
-                                        .frame(width: 45.0, height: 4.0)
-                                    Text("37˚")
+                                        .frame(width: 20.0, height: 4.0)
+                                    Text(model.temp_min)
                                     Spacer()
-                                        .frame(width: 15.0, height: 4.0)
+                                        .frame(width: 10.0, height: 4.0)
                                     Rectangle()
                                         .fill(Color.orange)
-                                        .frame(width: 80.0, height: 4.0)
+                                        .frame(width: 50.0, height: 4.0)
                                         .cornerRadius(5)
                                     Spacer()
-                                        .frame(width: 15.0, height: 4.0)
-                                    Text("37˚")
+                                        .frame(width: 10.0, height: 4.0)
+                                    Text(model.temp_max)
                                 }
                                 .padding()
                                 Divider()
@@ -221,21 +221,21 @@ struct WeatherView: View {
                                 HStack{
                                     Text("Today")
                                     Spacer()
-                                        .frame(width: 45.0, height: 4.0)
+                                        .frame(width: 35.0, height: 4.0)
                                     Image(systemName:"sun.max.fill")
                                         .foregroundColor(.yellow)
                                     Spacer()
-                                        .frame(width: 45.0, height: 4.0)
-                                    Text("37˚")
+                                        .frame(width: 20.0, height: 4.0)
+                                    Text(model.temp_min)
                                     Spacer()
-                                        .frame(width: 15.0, height: 4.0)
+                                        .frame(width: 10.0, height: 4.0)
                                     Rectangle()
                                         .fill(Color.orange)
-                                        .frame(width: 80.0, height: 4.0)
+                                        .frame(width: 50.0, height: 4.0)
                                         .cornerRadius(5)
                                     Spacer()
-                                        .frame(width: 15.0, height: 4.0)
-                                    Text("37˚")
+                                        .frame(width: 10.0, height: 4.0)
+                                    Text(model.temp_max)
                                 }
                                 .padding()
                                 Divider()
@@ -243,21 +243,21 @@ struct WeatherView: View {
                                 HStack{
                                     Text("Today")
                                     Spacer()
-                                        .frame(width: 45.0, height: 4.0)
+                                        .frame(width: 35.0, height: 4.0)
                                     Image(systemName:"sun.max.fill")
                                         .foregroundColor(.yellow)
                                     Spacer()
-                                        .frame(width: 45.0, height: 4.0)
-                                    Text("37˚")
+                                        .frame(width: 20.0, height: 4.0)
+                                    Text(model.temp_min)
                                     Spacer()
-                                        .frame(width: 15.0, height: 4.0)
+                                        .frame(width: 10.0, height: 4.0)
                                     Rectangle()
                                         .fill(Color.orange)
-                                        .frame(width: 80.0, height: 4.0)
+                                        .frame(width: 50.0, height: 4.0)
                                         .cornerRadius(5)
                                     Spacer()
-                                        .frame(width: 15.0, height: 4.0)
-                                    Text("37˚")
+                                        .frame(width: 10.0, height: 4.0)
+                                    Text(model.temp_max)
                                 }
                                 .padding()
                                 Divider()
@@ -265,21 +265,21 @@ struct WeatherView: View {
                                 HStack{
                                     Text("Today")
                                     Spacer()
-                                        .frame(width: 45.0, height: 4.0)
+                                        .frame(width: 35.0, height: 4.0)
                                     Image(systemName:"sun.max.fill")
                                         .foregroundColor(.yellow)
                                     Spacer()
-                                        .frame(width: 45.0, height: 4.0)
-                                    Text("37˚")
+                                        .frame(width: 20.0, height: 4.0)
+                                    Text(model.temp_min)
                                     Spacer()
-                                        .frame(width: 15.0, height: 4.0)
+                                        .frame(width: 10.0, height: 4.0)
                                     Rectangle()
                                         .fill(Color.orange)
-                                        .frame(width: 80.0, height: 4.0)
+                                        .frame(width: 50.0, height: 4.0)
                                         .cornerRadius(5)
                                     Spacer()
-                                        .frame(width: 15.0, height: 4.0)
-                                    Text("37˚")
+                                        .frame(width: 10.0, height: 4.0)
+                                    Text(model.temp_max)
                                 }
                                 .padding()
                                 Divider()
@@ -287,21 +287,21 @@ struct WeatherView: View {
                                 HStack{
                                     Text("Today")
                                     Spacer()
-                                        .frame(width: 45.0, height: 4.0)
+                                        .frame(width: 35.0, height: 4.0)
                                     Image(systemName:"sun.max.fill")
                                         .foregroundColor(.yellow)
                                     Spacer()
-                                        .frame(width: 45.0, height: 4.0)
-                                    Text("37˚")
+                                        .frame(width: 20.0, height: 4.0)
+                                    Text(model.temp_min)
                                     Spacer()
-                                        .frame(width: 15.0, height: 4.0)
+                                        .frame(width: 10.0, height: 4.0)
                                     Rectangle()
                                         .fill(Color.orange)
-                                        .frame(width: 80.0, height: 4.0)
+                                        .frame(width: 50.0, height: 4.0)
                                         .cornerRadius(5)
                                     Spacer()
-                                        .frame(width: 15.0, height: 4.0)
-                                    Text("37˚")
+                                        .frame(width: 10.0, height: 4.0)
+                                    Text(model.temp_max)
                                 }
                                 .padding()
                                 Divider()
@@ -309,28 +309,28 @@ struct WeatherView: View {
                                 HStack{
                                     Text("Today")
                                     Spacer()
-                                        .frame(width: 45.0, height: 4.0)
+                                        .frame(width: 35.0, height: 4.0)
                                     Image(systemName:"sun.max.fill")
                                         .foregroundColor(.yellow)
                                     Spacer()
-                                        .frame(width: 45.0, height: 4.0)
-                                    Text("37˚")
+                                        .frame(width: 20.0, height: 4.0)
+                                    Text(model.temp_min)
                                     Spacer()
-                                        .frame(width: 15.0, height: 4.0)
+                                        .frame(width: 10.0, height: 4.0)
                                     Rectangle()
                                         .fill(Color.orange)
-                                        .frame(width: 80.0, height: 4.0)
+                                        .frame(width: 50.0, height: 4.0)
                                         .cornerRadius(5)
                                     Spacer()
-                                        .frame(width: 15.0, height: 4.0)
-                                    Text("37˚")
+                                        .frame(width: 10.0, height: 4.0)
+                                    Text(model.temp_max)
                                 }
                                 .padding()
                             }
                             
                         }
                         .foregroundColor(.white)
-                        }
+                    }
                     .background(Color(hue: 0.989, saturation: 0.035, brightness: 0.277, opacity: 0.338))
                     .formStyle(.columns)
                     .scrollContentBackground(.hidden)
@@ -341,14 +341,26 @@ struct WeatherView: View {
                 
                 
             }
-            .background(LinearGradient(
-                colors: [Color.liner, Color.accent],
-                startPoint: .top,
-                endPoint: .bottom
-             )
-             .edgesIgnoringSafeArea([.top, .bottom]))
-            .foregroundColor(.white)
-            
+            else{
+                Text("Data Not Loaded")
+            }
+        }
+                .background(LinearGradient(
+                    colors: [Color.liner, Color.accent],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                    .edgesIgnoringSafeArea([.top, .bottom]))
+                .foregroundColor(.white)
+       
+    }
+    func GetTime() -> String{
+        let currentDate = Date()
+                let timeFormatter = DateFormatter()
+                timeFormatter.dateFormat = "h:mm a"
+                let currentTimeString = timeFormatter.string(from: currentDate)
+
+                return currentTimeString
     }
 }
 
