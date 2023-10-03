@@ -1,16 +1,17 @@
 //
-//  File.swift
+//  RemoteStore.swift
 //  WeatherApp
 //
-//  Created by apple on 9/27/23.
+//  Created by apple on 10/3/23.
 //
 
 import Foundation
 import Alamofire
 import SwiftUI
 
-class WeatherAPIHandler: ObservableObject {
-    static let shared = WeatherAPIHandler()
+class RemoteStore: ObservableObject{
+    
+    static let shared = RemoteStore()
     
     @Published var cityName: String = ""
     @Published var isFetchingWeather: Bool = false
