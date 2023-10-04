@@ -10,6 +10,19 @@ import Foundation
 class ConfigManager: ObservableObject
 {
     @Published var config: storeConfig = .remote
+    init(){
+        checkConnection()
+    }
+    func checkConnection(){
+        let connected = Reachability.isConnectedToNetwork()
+        if connected {
+            config = .remote
+        }
+        else {
+            config = .local
+        }
+    }
+    
 }
 
 

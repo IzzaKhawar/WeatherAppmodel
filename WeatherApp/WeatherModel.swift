@@ -155,12 +155,11 @@ struct List : Codable {
     let clouds : Clouds?
     let wind : Wind?
     let visibility : Int?
-    let pop : Int?
+    let pop : Double?
     let sys : Sys?
     let dt_txt : String?
-    
-    
 }
+
 struct Main : Codable {
     let temp : String?
     let feels_like : Double?

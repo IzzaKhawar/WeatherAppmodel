@@ -13,7 +13,7 @@ class RemoteStore: ObservableObject{
     
     static let shared = RemoteStore()
     
-    @Published var cityName: String = ""
+    @Published var cityName: String = "Karachi"
     @Published var isFetchingWeather: Bool = false
     @Published var weatherData: WeatherModel?
     @Published var selectedUnit = "metric"
@@ -39,7 +39,7 @@ class RemoteStore: ObservableObject{
         }
     }
     
-    func getWeatherByCityName() {
+    func getWeatherByCityName()   {
         self.isFetchingWeather = true
         let params: Parameters = [
             "q":  self.cityName,
@@ -47,10 +47,15 @@ class RemoteStore: ObservableObject{
             "units": self.selectedUnit
         ]
         
-        AF.request(Constants.shared.baseURL, parameters: params)
-            .validate()
+        AF.request(
+            Constants.shared.baseURL,
+            method: .get,
+            parameters: params,
+            encoding: URLEncoding.default,
+            headers: nil
+        ).validate(statusCode: 200 ..< 299)
             .responseDecodable(of: WeatherModel.self) { response in
-                switch response.result {
+            switch response.result {
                 case .success(let weather):
                         
                     self.weatherData = weather

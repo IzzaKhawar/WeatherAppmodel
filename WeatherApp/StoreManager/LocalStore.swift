@@ -10,18 +10,19 @@ import SwiftUI
 
 class LocalStore{
     static let shared = LocalStore()
-    
+    @Published var isFetchingWeather: Bool = false
     @Published var weatherData: WeatherModel?
 
     internal init() { }
     func getWeatherData() -> WeatherModel? {
+        self.isFetchingWeather = true
         if let jsonURL = Bundle.main.url(forResource: "modelData", withExtension: "json") {
             do {
                 let jsonData = try Data(contentsOf: jsonURL)
                 let decoder = JSONDecoder()
                 let weatherModel = try decoder.decode(WeatherModel.self, from: jsonData)
-                weatherData = weatherModel
-                return weatherData
+                self.weatherData = weatherModel
+                self.isFetchingWeather = false
             } catch {
                 print("Error loading and saving JSON data: \(error)")
             }
