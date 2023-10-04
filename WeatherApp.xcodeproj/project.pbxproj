@@ -88,29 +88,45 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		1865414D2AC4044D009BCE0F = {
+		1851EDD62ACD969F0016EFAD /* CoreData Classes */ = {
 			isa = PBXGroup;
 			children = (
 				1851EDAE2ACD93660016EFAD /* WeatherModelEntity+CoreDataClass.swift */,
-				1851EDAF2ACD93660016EFAD /* WeatherModelEntity+CoreDataProperties.swift */,
-				1851EDB02ACD93660016EFAD /* WindEntity+CoreDataClass.swift */,
-				1851EDB12ACD93660016EFAD /* WindEntity+CoreDataProperties.swift */,
 				1851EDB22ACD93660016EFAD /* WeatherEntity+CoreDataClass.swift */,
-				1851EDB32ACD93660016EFAD /* WeatherEntity+CoreDataProperties.swift */,
 				1851EDB42ACD93660016EFAD /* CityEntity+CoreDataClass.swift */,
-				1851EDB52ACD93660016EFAD /* CityEntity+CoreDataProperties.swift */,
 				1851EDB62ACD93660016EFAD /* ListEntity+CoreDataClass.swift */,
-				1851EDB72ACD93660016EFAD /* ListEntity+CoreDataProperties.swift */,
 				1851EDB82ACD93660016EFAD /* MainEntity+CoreDataClass.swift */,
-				1851EDB92ACD93660016EFAD /* MainEntity+CoreDataProperties.swift */,
 				1851EDBA2ACD93660016EFAD /* CloudsEntity+CoreDataClass.swift */,
-				1851EDBB2ACD93660016EFAD /* CloudsEntity+CoreDataProperties.swift */,
 				1851EDBC2ACD93660016EFAD /* SysEntity+CoreDataClass.swift */,
-				1851EDBD2ACD93660016EFAD /* SysEntity+CoreDataProperties.swift */,
 				1851EDBE2ACD93660016EFAD /* HourlyWeatherEntity+CoreDataClass.swift */,
-				1851EDBF2ACD93660016EFAD /* HourlyWeatherEntity+CoreDataProperties.swift */,
 				1851EDC02ACD93660016EFAD /* DailyWeatherEntity+CoreDataClass.swift */,
+				1851EDB02ACD93660016EFAD /* WindEntity+CoreDataClass.swift */,
+			);
+			path = "CoreData Classes";
+			sourceTree = "<group>";
+		};
+		1851EDD72ACD96B50016EFAD /* CoreData Properties */ = {
+			isa = PBXGroup;
+			children = (
+				1851EDAF2ACD93660016EFAD /* WeatherModelEntity+CoreDataProperties.swift */,
+				1851EDB32ACD93660016EFAD /* WeatherEntity+CoreDataProperties.swift */,
+				1851EDB12ACD93660016EFAD /* WindEntity+CoreDataProperties.swift */,
+				1851EDB72ACD93660016EFAD /* ListEntity+CoreDataProperties.swift */,
+				1851EDBB2ACD93660016EFAD /* CloudsEntity+CoreDataProperties.swift */,
+				1851EDBF2ACD93660016EFAD /* HourlyWeatherEntity+CoreDataProperties.swift */,
+				1851EDB92ACD93660016EFAD /* MainEntity+CoreDataProperties.swift */,
 				1851EDC12ACD93660016EFAD /* DailyWeatherEntity+CoreDataProperties.swift */,
+				1851EDBD2ACD93660016EFAD /* SysEntity+CoreDataProperties.swift */,
+				1851EDB52ACD93660016EFAD /* CityEntity+CoreDataProperties.swift */,
+			);
+			path = "CoreData Properties";
+			sourceTree = "<group>";
+		};
+		1865414D2AC4044D009BCE0F = {
+			isa = PBXGroup;
+			children = (
+				1851EDD72ACD96B50016EFAD /* CoreData Properties */,
+				1851EDD62ACD969F0016EFAD /* CoreData Classes */,
 				187A858F2AC55BA80025338C /* Model.xcdatamodeld */,
 				186541582AC4044D009BCE0F /* WeatherApp */,
 				186541572AC4044D009BCE0F /* Products */,
