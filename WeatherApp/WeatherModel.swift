@@ -58,8 +58,9 @@ struct WeatherModel : Codable {
         
         for key in sortedDates {
             if let value = groupedByDate[key] {
-                let minTemp = value.map { $0.temperature }.min() ?? "0.0"
-                let maxTemp = value.map { $0.temperature }.max() ?? "0.0"
+                let temperatures = value.compactMap { Double($0.temperature) }
+                let minTemp = String(temperatures.min() ?? 0.0)
+                let maxTemp = String(temperatures.max() ?? 0.0)
                 
                 //                let formatter = NumberFormatter()
                 //                formatter.minimumFractionDigits = 2
