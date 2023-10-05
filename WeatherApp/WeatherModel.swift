@@ -199,13 +199,13 @@ struct Main : Codable {
         temp_kf = try values.decodeIfPresent(Double.self, forKey: .temp_kf)
         
         let formatter = NumberFormatter()
-        formatter.minimumFractionDigits = 2
-        formatter.maximumFractionDigits = 2
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 0
         formatter.locale = Locale(identifier: "en_US")
         
-        temp = formatter.string(from: NSNumber(value: mainTemp ?? 0.00)) ?? "0.00"
-        temp_max = formatter.string(from: NSNumber(value: tempMax ?? 0.00)) ?? "0.00"
-        temp_min = formatter.string(from: NSNumber(value: tempMin ?? 0.00)) ?? "0.00"
+        temp = formatter.string(from: NSNumber(value: mainTemp ?? 0)) ?? "0"
+        temp_max = formatter.string(from: NSNumber(value: tempMax ?? 0)) ?? "0"
+        temp_min = formatter.string(from: NSNumber(value: tempMin ?? 0)) ?? "0"
     }
     
 }
