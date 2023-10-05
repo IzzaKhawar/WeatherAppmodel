@@ -8,19 +8,20 @@ import SwiftUI
 
 struct WeatherView: View {
     var modelData: WeatherModel?
-    
+    @State private var isSaved: Bool = false
     var body: some View {
-        VStack {
+        NavigationView{
+            VStack {
                 if let model = modelData {
                     WeatherHeader(model: model)
                     
                     HourlyForecast(model: model)
-                        
-                     DailyForecast(model: model)
-                
-                    .background(Color.grayish)
-                    .cornerRadius(15.0)
-                    .padding()
+                    
+                    DailyForecast(model: model)
+                    
+                        .background(Color.grayish)
+                        .cornerRadius(15.0)
+                        .padding()
                     
                     
                 } else {
@@ -28,18 +29,43 @@ struct WeatherView: View {
                         .fontWeight(.bold)
                         .font(.headline)
                 }
-            
-        }
-        .frame(maxWidth: .infinity)
-        .background(
-            LinearGradient(
-                gradient: Gradient(colors: [Color.color, Color.liner]),
-                startPoint: .top,
-                endPoint: .bottom
+                
+            }
+            .frame(maxWidth: .infinity)
+            .background(
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.color, Color.liner]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .edgesIgnoringSafeArea([.top, .bottom])
             )
-            .edgesIgnoringSafeArea([.top, .bottom])
-        )
-        .foregroundColor(.white)
+            .foregroundColor(.white)
+            
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            if let model = modelData {
+                                isSaved = DataManager.sharedInstance.saveWeatherModelToCoreData(model)
+                            }
+                        } label: {
+                            HStack {
+                                Text("Add to fav")
+                                if isSaved {
+                                    Image(systemName: "heart.fill")
+                                }
+                                else {
+                                    Image(systemName: "heart")
+
+                                }
+                            }
+                        }
+                        
+                    
+                
+                }
+            }
+        }
     }
 }
 
@@ -52,11 +78,11 @@ struct WeatherHeader: View {
                 .font(.system(size: 34))
                 .fontWeight(.bold)
 
-            Text("\(model.list?.first?.main?.temp ?? "0.0")°C")
+            Text("\(model.list?.first?.main?.temp ?? "0")°C")
 
             Text(model.list?.first?.weather?.first?.description ?? "")
 
-            Text("H: \(model.list?.first?.main?.temp_max ?? "0.0")°C - L: \(model.list?.first?.main?.temp_min ?? "0.0")°C")
+            Text("H: \(model.list?.first?.main?.temp_max ?? "0")°C - L: \(model.list?.first?.main?.temp_min ?? "0")°C")
                 .font(.headline)
         }
         

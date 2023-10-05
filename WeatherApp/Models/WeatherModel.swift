@@ -62,17 +62,13 @@ struct WeatherModel : Codable {
                 let minTemp = String(temperatures.min() ?? 0.0)
                 let maxTemp = String(temperatures.max() ?? 0.0)
                 
-                //                let formatter = NumberFormatter()
-                //                formatter.minimumFractionDigits = 2
-                //                formatter.maximumFractionDigits = 2
-                //                let TempMin = formatter.string(from: NSNumber(value: minTemp)) ?? "0.00"
-                //                let TempMax = formatter.string(from: NSNumber(value: maxTemp)) ?? "0.00"
-                
+                let middleIndex = (value.count / 2) - 1
                 let dailyWeatherItem = DailyWeather(
                     date: key,
                     minTemperature: minTemp,
                     maxTemperature: maxTemp,
-                    weatherMain: value.first?.weatherMain ?? ""
+                   
+                    weatherMain: value[middleIndex].weatherMain
                 )
                 
                 dailyWeatherArray.append(dailyWeatherItem)
@@ -247,27 +243,27 @@ struct Weather : Codable {
                 case "03d":
                     icon =  "cloud"
                 case "03n":
-                    icon =  "cloud.moon.fill"
+                    icon =  "cloud.fill"
                 case "04d":
-                    icon = "cloud.fill"
+                    icon = "smoke"
                 case "04n":
-                    icon = "cloud.moon.fill"
+                    icon = "smoke.fill"
                 case "09d":
-                    icon = "cloud.sun.rain"
+                    icon = "cloud.rain"
                 case "09n":
-                    icon = "cloud.moon.rain"
+                    icon = "cloud.rain.fill"
                 case "10d":
-                    icon = "sun.rain"
+                    icon = "cloud.sun.rain"
                 case "10n":
-                    icon = "cloud.moon.rain.fill"
+                    icon = "cloud.moon.rain"
                 case "11d":
-                    icon = "cloud.sun.bolt"
+                    icon = "cloud.bolt.rain"
                 case "11n":
-                    icon = "cloud.moon.bolt"
+                    icon = "cloud.bolt.rain.fill"
                 case "13d":
                     icon = "snow"
                 case "13n":
-                    icon = "cloud.snow"
+                    icon = "snowflake"
                 case "50d":
                     icon = "tornado.circle"
                 case "50n":
@@ -276,7 +272,7 @@ struct Weather : Codable {
                     icon = "sun.max.fill"
             }
         } else {
-            icon = "sun.max.fill"
+            icon = "sun.min"
         }
     }
     

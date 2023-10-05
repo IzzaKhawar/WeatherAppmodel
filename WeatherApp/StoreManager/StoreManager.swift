@@ -18,8 +18,8 @@ class StoreManager : ObservableObject{
     func getWeather()  -> WeatherModel? {
         switch configManager.config {
         case .remote:
-                RemoteStore.shared.getWeatherByCityName()
-                weatherData = RemoteStore.shared.weatherData
+//                RemoteStore.shared.getWeatherByCityName()
+//                weatherData = RemoteStore.shared.weatherData
                 return weatherData
                 
         case .local:
