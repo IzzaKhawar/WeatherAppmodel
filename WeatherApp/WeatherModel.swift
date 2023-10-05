@@ -8,6 +8,8 @@
 
 
 import Foundation
+import SwiftUI
+
 struct WeatherModel : Codable {
     let cod : String?
     let message : Int?
@@ -17,23 +19,23 @@ struct WeatherModel : Codable {
     var hourlyWeather: [HourlyWeather] {
         return list?.map { item in
             let timestamp: TimeInterval = TimeInterval(item.dt ?? 0)
-
+            
             let date = Date(timeIntervalSince1970: timestamp)
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "hh:mm a"  // Use "HH:mm" for 24-hour format
-
+            
             let formattedTime = dateFormatter.string(from: date)
             
             return HourlyWeather(
                 date : item.dt ?? 0,
                 timestamp: formattedTime,
                 temperature: item.main?.temp ?? "0.0",
-                weatherMain: item.weather?.first?.main ?? ""
+                weatherMain: item.weather?.first?.icon ?? ""
             )
         } ?? []
     }
-
-
+    
+    
     
     var dailyWeather: [DailyWeather] {
         let groupedByDate = Dictionary(grouping: hourlyWeather) { weather in
@@ -42,7 +44,7 @@ struct WeatherModel : Codable {
             dateFormatter.dateFormat = "dd-MM-yyyy"
             return dateFormatter.string(from: date)
         }
-
+        
         let sortedDates = groupedByDate.keys.sorted { (dateStr1, dateStr2) in
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "dd-MM-yyyy"
@@ -51,35 +53,35 @@ struct WeatherModel : Codable {
             }
             return false
         }
-
+        
         var dailyWeatherArray: [DailyWeather] = []
-
+        
         for key in sortedDates {
             if let value = groupedByDate[key] {
                 let minTemp = value.map { $0.temperature }.min() ?? "0.0"
                 let maxTemp = value.map { $0.temperature }.max() ?? "0.0"
-
-//                let formatter = NumberFormatter()
-//                formatter.minimumFractionDigits = 2
-//                formatter.maximumFractionDigits = 2
-//                let TempMin = formatter.string(from: NSNumber(value: minTemp)) ?? "0.00"
-//                let TempMax = formatter.string(from: NSNumber(value: maxTemp)) ?? "0.00"
-
+                
+                //                let formatter = NumberFormatter()
+                //                formatter.minimumFractionDigits = 2
+                //                formatter.maximumFractionDigits = 2
+                //                let TempMin = formatter.string(from: NSNumber(value: minTemp)) ?? "0.00"
+                //                let TempMax = formatter.string(from: NSNumber(value: maxTemp)) ?? "0.00"
+                
                 let dailyWeatherItem = DailyWeather(
                     date: key,
                     minTemperature: minTemp,
                     maxTemperature: maxTemp,
                     weatherMain: value.first?.weatherMain ?? ""
                 )
-
+                
                 dailyWeatherArray.append(dailyWeatherItem)
             }
         }
-
+        
         return dailyWeatherArray
     }
-
-
+    
+    
     
     enum CodingKeys: String, CodingKey {
         
@@ -205,7 +207,7 @@ struct Main : Codable {
         temp_max = formatter.string(from: NSNumber(value: tempMax ?? 0.00)) ?? "0.00"
         temp_min = formatter.string(from: NSNumber(value: tempMin ?? 0.00)) ?? "0.00"
     }
-
+    
 }
 struct Sys : Codable {
     let pod : String?
@@ -216,7 +218,69 @@ struct Weather : Codable {
     let main : String?
     let description : String?
     let icon : String?
+    
+    enum CodingKeys: String, CodingKey {
+        
+        case id = "id"
+        case main = "main"
+        case description = "description"
+        case icon = "icon"
+    }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        id = try values.decodeIfPresent(Int.self, forKey: .id)
+        main = try values.decodeIfPresent(String.self, forKey: .main)
+        description = try values.decodeIfPresent(String.self, forKey: .description)
+        if let decodedIcon = try values.decodeIfPresent(String.self, forKey: .icon) {
+            
+            switch decodedIcon {
+                case "01d":
+                    icon = "sun.max.fill"
+                case "01n":
+                    icon = "moon.fill"
+                case "02d":
+                    icon = "cloud.sun.fill"
+                case "02n":
+                    icon = "cloud.moon"
+                case "03d":
+                    icon =  "cloud"
+                case "03n":
+                    icon =  "cloud.moon.fill"
+                case "04d":
+                    icon = "cloud.fill"
+                case "04n":
+                    icon = "cloud.moon.fill"
+                case "09d":
+                    icon = "cloud.sun.rain"
+                case "09n":
+                    icon = "cloud.moon.rain"
+                case "10d":
+                    icon = "sun.rain"
+                case "10n":
+                    icon = "cloud.moon.rain.fill"
+                case "11d":
+                    icon = "cloud.sun.bolt"
+                case "11n":
+                    icon = "cloud.moon.bolt"
+                case "13d":
+                    icon = "snow"
+                case "13n":
+                    icon = "cloud.snow"
+                case "50d":
+                    icon = "tornado.circle"
+                case "50n":
+                    icon = "tornado.circle.fill"
+                default:
+                    icon = "sun.max.fill"
+            }
+        } else {
+            icon = "sun.max.fill"
+        }
+    }
+    
 }
+
 
 struct Wind : Codable {
     let speed : Double?

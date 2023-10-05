@@ -107,7 +107,7 @@ struct DailyWeatherView: View {
                     Spacer()
                         .frame(width: 30 , height: 35)
                     
-                    Image(systemName: "\(dailymodel.weatherMain.description)".lowercased())
+                    Image(systemName: "\(dailymodel.weatherMain)".lowercased())
                         .foregroundColor(.white)
                     Spacer()
                         .frame(width: 30 , height: 35)
@@ -162,7 +162,7 @@ struct HourlyWeatherView: View {
             Spacer()
                 .frame(width: 15 , height: 25)
 
-            Image(systemName: "\(hourlyData.weatherMain.description)".lowercased())
+            Image(systemName: "\(hourlyData.weatherMain)".lowercased())
                 .foregroundColor(.white)
             Spacer()
                 .frame(width: 15 , height: 25)
