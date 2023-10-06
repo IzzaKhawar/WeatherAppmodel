@@ -136,16 +136,58 @@ struct City : Codable {
     let sunrise : Int?
     let sunset : Int?
     
-    
+    enum CodingKeys: String, CodingKey {
+           case id = "id"
+           case name = "name"
+           case coord = "coord"
+           case country = "country"
+           case population = "population"
+           case timezone = "timezone"
+           case sunrise = "sunrise"
+           case sunset = "sunset"
+       }
+
+       init(from decoder: Decoder) throws {
+           let container = try decoder.container(keyedBy: CodingKeys.self)
+           id = try container.decodeIfPresent(Int.self, forKey: .id)
+           name = try container.decodeIfPresent(String.self, forKey: .name)
+           coord = try container.decodeIfPresent(Coord.self, forKey: .coord)
+           country = try container.decodeIfPresent(String.self, forKey: .country)
+           population = try container.decodeIfPresent(Int.self, forKey: .population)
+           timezone = try container.decodeIfPresent(Int.self, forKey: .timezone)
+           sunrise = try container.decodeIfPresent(Int.self, forKey: .sunrise)
+           sunset = try container.decodeIfPresent(Int.self, forKey: .sunset)
+       }
     
 }
 struct Clouds : Codable {
     let all : Int?
     
+    enum CodingKeys: String, CodingKey {
+
+        case all = "all"
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        all = try values.decodeIfPresent(Int.self, forKey: .all)
+    }
 }
 struct Coord : Codable {
     let lat : Double?
     let lon : Double?
+    
+    enum CodingKeys: String, CodingKey {
+
+        case lat = "lat"
+        case lon = "lon"
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        lat = try values.decodeIfPresent(Double.self, forKey: .lat)
+        lon = try values.decodeIfPresent(Double.self, forKey: .lon)
+    }
 }
 struct List : Codable {
     let dt : Int?
@@ -157,6 +199,31 @@ struct List : Codable {
     let pop : Double?
     let sys : Sys?
     let dt_txt : String?
+    
+    enum CodingKeys: String, CodingKey {
+            case dt = "dt"
+            case main = "main"
+            case weather = "weather"
+            case clouds = "clouds"
+            case wind = "wind"
+            case visibility = "visibility"
+            case pop = "pop"
+            case sys = "sys"
+            case dt_txt = "dt_txt"
+        }
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            dt = try container.decodeIfPresent(Int.self, forKey: .dt)
+            main = try container.decodeIfPresent(Main.self, forKey: .main)
+            weather = try container.decodeIfPresent([Weather].self, forKey: .weather)
+            clouds = try container.decodeIfPresent(Clouds.self, forKey: .clouds)
+            wind = try container.decodeIfPresent(Wind.self, forKey: .wind)
+            visibility = try container.decodeIfPresent(Int.self, forKey: .visibility)
+            pop = try container.decodeIfPresent(Double.self, forKey: .pop)
+            sys = try container.decodeIfPresent(Sys.self, forKey: .sys)
+            dt_txt = try container.decodeIfPresent(String.self, forKey: .dt_txt)
+        }
 }
 
 struct Main : Codable {
@@ -208,6 +275,16 @@ struct Main : Codable {
 }
 struct Sys : Codable {
     let pod : String?
+    
+    enum CodingKeys: String, CodingKey {
+
+        case pod = "pod"
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        pod = try values.decodeIfPresent(String.self, forKey: .pod)
+    }
     
 }
 struct Weather : Codable {
@@ -284,5 +361,18 @@ struct Wind : Codable {
     let deg : Int?
     let gust : Double?
     
+    enum CodingKeys: String, CodingKey {
+
+        case speed = "speed"
+        case deg = "deg"
+        case gust = "gust"
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        speed = try values.decodeIfPresent(Double.self, forKey: .speed)
+        deg = try values.decodeIfPresent(Int.self, forKey: .deg)
+        gust = try values.decodeIfPresent(Double.self, forKey: .gust)
+    }
     
 }

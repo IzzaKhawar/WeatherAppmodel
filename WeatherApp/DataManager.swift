@@ -10,6 +10,9 @@ import UIKit
 
 open class DataManager: NSObject {
     public static let sharedInstance = DataManager()
+    @Published var weatherModels: [WeatherModelEntity] = []
+
+    
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "Model")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
@@ -21,16 +24,16 @@ open class DataManager: NSObject {
     }()
     
     private override init() {}
-
+    
     private func getContext() -> NSManagedObjectContext? {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return nil }
         return appDelegate.persistentContainer.viewContext
     }
-
+    
     func retrieveUser() -> NSManagedObject? {
         guard let managedContext = getContext() else { return nil }
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
-
+        
         do {
             let result = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
             if result.count > 0 {
@@ -43,16 +46,57 @@ open class DataManager: NSObject {
             return nil
         }
     }
+    private func loadPersons() {
+        let context = persistentContainer.viewContext
 
+        let fetchRequest = NSFetchRequest<WeatherModelEntity>(entityName: "WeatherModelEntity")
+        
+        do {
+            self.weatherModels = try context.fetch(fetchRequest)
+        } catch let error as NSError {
+            debugPrint("Error fetching data: \(error.localizedDescription)")
+        }
+    }
+    
+    func deleteDataModelFromCoreData(id: Int) -> Bool {
+        let context = persistentContainer.viewContext
+        
+        // Define a fetch request to retrieve the WeatherModelEntity with the matching City.id
+        let fetchRequest: NSFetchRequest<WeatherModelEntity> = WeatherModelEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "city.id == %d", id)
+        
+        do {
+            // Fetch the matching WeatherModelEntity, if it exists
+            let result = try context.fetch(fetchRequest)
+            
+            if let weatherModelEntity = result.first {
+                // Delete the found WeatherModelEntity
+                context.delete(weatherModelEntity)
+                
+                // Save the changes
+                try context.save()
+                
+                return true // Deletion successful
+            } else {
+                // No matching WeatherModelEntity found
+                return false
+            }
+        } catch {
+            print("Failed to delete data model from Core Data: \(error)")
+            return false
+        }
+    }
+    
     func saveWeatherModelToCoreData(_ weatherModel: WeatherModel) -> Bool {
         let context = persistentContainer.viewContext  // Access the managed object context
-
+        
         let weatherModelEntity = WeatherModelEntity(context: context)
         weatherModelEntity.cod = weatherModel.cod
         weatherModelEntity.message = Int16(weatherModel.message ?? 0)
         weatherModelEntity.cnt = Int16(weatherModel.cnt ?? 0)
-
+        
         // Map City Entity
+        
         if let city = weatherModel.city {
             let cityEntity = CityEntity(context: context)
             cityEntity.id = Int32(city.id ?? 0)
@@ -61,7 +105,7 @@ open class DataManager: NSObject {
             cityEntity.population = Int32(city.population ?? 0)
             weatherModelEntity.city = cityEntity
         }
-
+        
         // Map List Entities
         if let list = weatherModel.list {
             for listItem in list {
@@ -70,7 +114,7 @@ open class DataManager: NSObject {
                 listEntity.visibility = Int32(listItem.visibility ?? 0)
                 listEntity.pop = listItem.pop ?? 0.0
                 listEntity.dt_txt = listItem.dt_txt
-
+                
                 // Map Main Entity
                 if let main = listItem.main {
                     let mainEntity = MainEntity(context: context)
@@ -85,7 +129,7 @@ open class DataManager: NSObject {
                     mainEntity.temp_kf = main.temp_kf ?? 0.0
                     listEntity.main = mainEntity
                 }
-
+                
                 // Map Weather Entities
                 if let weatherList = listItem.weather {
                     for weatherItem in weatherList {
@@ -97,14 +141,14 @@ open class DataManager: NSObject {
                         listEntity.addToWeather(weatherEntity)
                     }
                 }
-
+                
                 // Map Clouds Entity
                 if let clouds = listItem.clouds {
                     let cloudsEntity = CloudsEntity(context: context)
                     cloudsEntity.all = Int32(clouds.all ?? 0)
                     listEntity.clouds = cloudsEntity
                 }
-
+                
                 // Map Wind Entity
                 if let wind = listItem.wind {
                     let windEntity = WindEntity(context: context)
@@ -113,19 +157,19 @@ open class DataManager: NSObject {
                     windEntity.gust = wind.gust ?? 0.0
                     listEntity.wind = windEntity
                 }
-
+                
                 // Map Sys Entity
                 if let sys = listItem.sys {
                     let sysEntity = SysEntity(context: context)
                     sysEntity.pod = sys.pod
                     listEntity.sys = sysEntity
                 }
-
+                
                 // Connect ListEntity to WeatherModelEntity
                 listEntity.weatherModel = weatherModelEntity
             }
         }
-
+        
         // Map HourlyWeather Entities
         for hourlyWeatherItem in weatherModel.hourlyWeather {
             let hourlyWeatherEntity = HourlyWeatherEntity(context: context)
@@ -135,7 +179,7 @@ open class DataManager: NSObject {
             hourlyWeatherEntity.weatherMain = hourlyWeatherItem.weatherMain
             hourlyWeatherEntity.weatherModel = weatherModelEntity
         }
-
+        
         // Map DailyWeather Entities
         for dailyWeatherItem in weatherModel.dailyWeather {
             let dailyWeatherEntity = DailyWeatherEntity(context: context)
@@ -145,7 +189,7 @@ open class DataManager: NSObject {
             dailyWeatherEntity.weatherMain = dailyWeatherItem.weatherMain
             dailyWeatherEntity.weatherModel = weatherModelEntity
         }
-
+        
         do {
             try context.save()
             return true
@@ -154,6 +198,19 @@ open class DataManager: NSObject {
             return false
         }
     }
+    
+    
+    
+    
+    
+    
+    
+    
+   
+    
+    
+    
+    
 }
 
 extension DataManager {
@@ -165,7 +222,7 @@ extension DataManager {
         do {
             try managedContext.save()
         } catch let error as NSError {
-            print("Failed to save new user! \(error): \(error.userInfo)")
+            print("Failed to save new Weather! \(error): \(error.userInfo)")
         }
     }
 }

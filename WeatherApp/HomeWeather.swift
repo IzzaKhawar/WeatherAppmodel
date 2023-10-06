@@ -7,17 +7,15 @@
 //
 import SwiftUI
 import UIKit
-import Alamofire
-
 struct ContentView: View {
     
-    @State private var searchText = ""
+    @State var searchText = ""
     @State var isFetchingWeather : Bool = false
     let configManager = ConfigManager()
     @State var model : WeatherModel?
+    @State var coreModel : [WeatherModelEntity]?
+    @StateObject var store = StoreManager.shared
     @State private var navigateToWeatherView = false
-    
-    @StateObject var viewModel = ViewModel()
     init() {
         // Use this if NavigationBarTitle is with Large Font
                UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]
@@ -25,85 +23,112 @@ struct ContentView: View {
                //Use this if NavigationBarTitle is with displayMode = .inline
                UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
     }
-    
     var body: some View {
         NavigationView {
                 VStack {
                     HStack(alignment: .center, spacing: -6.0) {
-                        TextField("Search for city", text: $viewModel.searchText)
+                        TextField("Search for city", text: $searchText)
                             .padding(10.0)
                             .background(.regularMaterial)
                                 .cornerRadius(16)
                                 .padding(.horizontal)
                                 .submitLabel(.search)
-                                .onSubmit {
-                                    if !viewModel.searchText.isEmpty {
-                                        viewModel.getWeather()
+                                .onSubmit{
+                                    if !(searchText.isEmpty) {
+                                        configManager.checkConnection()
+                                        store.cityName = self.searchText
+                                        store.getWeather()
+                                        self.isFetchingWeather = store.isFetchingWeather
+                                        searchText = ""
+                                        navigateToWeatherView = true
                                     }
-                                    else if viewModel.searchText.isEmpty{
-//                                        LocalStore.shared.getWeatherData()
+                                    
+                                    else if searchText.isEmpty {
+                                        configManager.checkConnection()
+                                        LocalStore.shared.getWeatherData()
+                                        self.isFetchingWeather = LocalStore.shared.isFetchingWeather
+                                        
                                     }
                                 }
                     }
-                    if viewModel.isFetchingWeather {
+                    if store.isFetchingWeather {
                         Spacer()
                         ProgressView()
                             .tint(.white)
                     } else {
                         
-                        if let weather = viewModel.fetchedWeatherData {
-                            NavigationLink(destination: WeatherView(modelData: viewModel.fetchedWeatherData)) {
-                                WeatherCard(modelData: weather, selectedUnit: viewModel.selectedUnit)
-                            }
-                                .padding(.horizontal)
+                        if let weather = store.weatherData {
+                            NavigationLink("",destination: WeatherView(modelData: store.weatherData , selectedUnits: store.selectedUnit), isActive: $navigateToWeatherView)
+                                .hidden()
+                            
                             
                         }
                     }
                     Spacer()
                     
                     
+//                    List(coreModel ?? [], id: \WeatherModelEntity.city?.id) { coreDataItem in
+//                        WeatherCard(CoreData: coreDataItem)
+//                    }
+                    
+                    
+                    
+                    
                 }.frame(maxWidth: .infinity, maxHeight: .infinity)
+                
+                
+                    .background(
+                        LinearGradient(
+                            gradient: Gradient(
+                                colors: [Color.color, Color.grayish]
+                            ),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        ).ignoresSafeArea()
+                    )
             
-            .background(
-                Color.black
-                )
-           
             .navigationTitle("Weather")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
                         Button("Edit List", systemImage: "pencil") {}
+                        
                         Button {
-                            viewModel.selectedUnit = .metric
-                            if !viewModel.searchText.isEmpty {
-                                viewModel.getWeather()
-                            }
+                            store.selectedUnit = .imperial
+                            
+                                configManager.checkConnection()
+                                store.getWeather()
+                                self.isFetchingWeather = store.isFetchingWeather
+                           
+
                         } label: {
                             HStack {
-
-                                Text("Celcius") // (°C)
-                                if viewModel.selectedUnit == .metric {
-                                    Image(systemName: "checkmark")
+                                Text("Fahrenheit")
+                                if store.selectedUnit.rawValue == "imperial"{
+                                    Image(systemName: "checkmark.circle")
                                 }
                             }
                         }
                         Button {
-                            viewModel.selectedUnit = .imperial
-                            if !viewModel.searchText.isEmpty {
-                                viewModel.getWeather()
-                            }
+                            StoreManager.shared.selectedUnit = .metric
+                            
+                                configManager.checkConnection()
+                                store.getWeather()
+                                self.isFetchingWeather = store.isFetchingWeather
+                            
                         } label: {
                             HStack {
-
-                                Text("Fahrenheit") //(°F)
-                                if viewModel.selectedUnit == .imperial {
-                                    Image(systemName: "checkmark")
+                                Text("Celcius")
+                                if store.selectedUnit.rawValue == "metric"{
+                                    Image(systemName: "checkmark.circle")
                                 }
+                                
                             }
                         }
+
                     } label: {
-                        Image(systemName: "ellipsis.circle")
-                            .foregroundColor(.white)
+                        Label("Menu", systemImage: "ellipsis.circle")
+                                
                     }
                 }
             }
@@ -112,64 +137,36 @@ struct ContentView: View {
     
 }
 
-extension ContentView {
-    class ViewModel: ObservableObject {
-        @Published var searchText = ""
-        @Published var isFetchingWeather = false
-        @Published var fetchedWeatherData: WeatherModel?
-        @AppStorage ("selected-unit") var selectedUnit = Units.metric
-        func getWeather() {
-                self.isFetchingWeather = true
-                let params: Parameters = [
-                    "q":  self.searchText,
-                    "appid": Constants.shared.API_Key,
-                    "units": self.selectedUnit.rawValue
-                ]
-                
-            APIManager.shared.getWeatherByCityName(params: params) { response in
-                self.fetchedWeatherData = response
-                self.isFetchingWeather = false
-                self.searchText = ""
-            } failure: { error in
-                print(error)
-            }
-
-               
-        }
-    }
-}
-
-
-enum Units: String {
-    case metric = "metric"
-    case imperial = "imperial"
-    case standard = "standard"
-}
 
 struct WeatherCard: View {
-    var modelData: WeatherModel?
-    let selectedUnit: Units
+    var CoreData: WeatherModelEntity?
+
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text(modelData?.city?.name ??  "")
+                Text(CoreData?.city?.name ??  "")
                     .font(.title3)
                     .fontWeight(.semibold)
                 let  currentTime = GetTime()
                 Text(currentTime)
                     .font(.footnote)
                 Spacer()
-                Text(modelData?.list?.first?.weather?.first?.description ?? "" )
-                    .font(.caption)
+                if let firstList = CoreData?.list?.first as? List {
+                    Text(firstList.weather?.description ?? "")
+                        .font(.caption)
+                }
             }
             Spacer()
             VStack(alignment: .trailing) {
-                Text("\(Int(Double(modelData?.list?.first?.main?.temp ?? "0") ?? 0))\(selectedUnit == .metric ? "°C" : "°F")")
+                if let firstList = CoreData?.list?.first as? List {
+                Text("\(Int(Double(firstList.main?.temp ?? "0") ?? 0))")
                
                     .font(.largeTitle)
                 Spacer()
-                Text("H: \(Int(Double(modelData?.list?.first?.main?.temp_max ?? "0") ?? 0))\(selectedUnit == .metric ? "°C" : "°F")  L: \(Int(Double(modelData?.list?.first?.main?.temp_min ?? "0") ?? 0))\(selectedUnit == .metric ? "°C" : "°F")")
-                    .font(.footnote)
+                
+                    Text("H: \(Int(Double(firstList.main?.temp_max ?? "0") ?? 0))  L: \(Int(Double(firstList.main?.temp_min ?? "0") ?? 0))")
+                        .font(.footnote)
+                }
             }
         }.padding()
             .background(Color.teal)
@@ -177,7 +174,7 @@ struct WeatherCard: View {
             .frame(height: 100)
             .foregroundColor(.white)
     }
-    
+
     func GetTime() -> String{
         let currentDate = Date()
                 let timeFormatter = DateFormatter()
@@ -186,17 +183,13 @@ struct WeatherCard: View {
 
                 return currentTimeString
     }
+    
 }
 
-struct CustomAnimationModifier: AnimatableModifier {
-    var animatableData: Double
 
-    func body(content: Content) -> some View {
-        content
-            .foregroundColor(Color.grayish)
-            .opacity(animatableData)
-    }
-}
+
+
+
 #Preview {
     ContentView()
 }

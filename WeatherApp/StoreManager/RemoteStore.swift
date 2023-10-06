@@ -13,10 +13,6 @@ class RemoteStore: ObservableObject{
     
     static let shared = RemoteStore()
     
-    @Published var isFetchingWeather: Bool = false
-    @Published var weatherData: WeatherModel?
-    @AppStorage("lastCity") var lastCity: String = ""
-    
     internal init() { }
     
     func get(endPoint: String, parameters: Parameters?, completion: @escaping (Result<Data, Error>) -> Void) {
@@ -36,4 +32,25 @@ class RemoteStore: ObservableObject{
             }
         }
     }
+    
+    func getWeatherByCityName(params: Parameters, success: @escaping (WeatherModel) -> Void, failure: @escaping (Error) -> Void) {
+        RemoteStore.shared.get( endPoint: Constants.shared.baseURL, parameters: params) { response in
+            switch response {
+                case .success(let data):
+                do{
+                    let decoder = JSONDecoder()
+                    let weather = try decoder.decode(WeatherModel.self, from: data)
+                    success(weather)
+                } catch {
+                    failure(error)
+                }
+                   
+                        
+                case .failure(let error):
+                    print("Error: \(error)")
+                }
+            }
+    }
+
+    
 }
