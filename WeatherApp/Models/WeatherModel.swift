@@ -10,7 +10,7 @@
 import Foundation
 import SwiftUI
 
-struct WeatherModel : Codable {
+struct WeatherModel : Codable  {
     let cod : String?
     let message : Int?
     let cnt : Int?
@@ -375,3 +375,8 @@ struct Wind : Codable {
     }
     
 }
+
+
+//extension WeatherModel : Identifiable {
+//
+//}

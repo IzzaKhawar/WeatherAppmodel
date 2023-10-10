@@ -20,3 +20,6 @@ extension FavWeather {
     @NSManaged public var id: UUID?
 
 }
+extension FavWeather : Identifiable {
+
+}
