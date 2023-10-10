@@ -52,12 +52,12 @@ struct WeatherView: View {
 
                 Button {
                     if isSaved {
-                        if let id = modelData?.city?.id {
-                            isSaved = !DataManager.sharedInstance.deleteDataModelFromCoreData(id: id)
+                        if let Cityname = modelData?.city?.name {
+                            isSaved = !DataManager.sharedInstance.deleteFavWeather(name: Cityname)
                         }
                     } else {
-                        if let model = modelData {
-                            isSaved = DataManager.sharedInstance.saveWeatherModelToCoreData(model)
+                        if let name = modelData?.city?.name {
+                            isSaved = DataManager.sharedInstance.saveFavWeather(name)
                         }
                     }
                 }

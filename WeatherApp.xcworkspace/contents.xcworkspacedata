@@ -8,10 +8,10 @@
       location = "group:FavWeather+CoreDataProperties.swift">
    </FileRef>
    <FileRef
-      location = "group:WeatherModelEntity+CoreDataClass.swift">
+      location = "group:User+CoreDataClass.swift">
    </FileRef>
    <FileRef
-      location = "group:WeatherModelEntity+CoreDataProperties.swift">
+      location = "group:User+CoreDataProperties.swift">
    </FileRef>
    <FileRef
       location = "group:WeatherApp.xcodeproj">

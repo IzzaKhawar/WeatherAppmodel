@@ -2,7 +2,7 @@
 //  FavWeather+CoreDataClass.swift
 //  
 //
-//  Created by apple on 10/9/23.
+//  Created by apple on 10/10/23.
 //
 //
 

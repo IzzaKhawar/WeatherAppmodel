@@ -2,7 +2,7 @@
 //  FavWeather+CoreDataProperties.swift
 //  
 //
-//  Created by apple on 10/9/23.
+//  Created by apple on 10/10/23.
 //
 //
 
@@ -17,9 +17,6 @@ extension FavWeather {
     }
 
     @NSManaged public var city: String?
-    @NSManaged public var id: Int32
-
-}
-extension FavWeather : Identifiable {
+    @NSManaged public var id: UUID?
 
 }
