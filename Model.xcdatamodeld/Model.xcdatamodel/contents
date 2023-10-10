@@ -18,6 +18,15 @@
         <attribute name="weatherMain" optional="YES" attributeType="String"/>
         <relationship name="weatherModel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WeatherModelEntity" inverseName="dailyWeather" inverseEntity="WeatherModelEntity"/>
     </entity>
+    <entity name="FavWeather" representedClassName="FavWeather" syncable="YES" codeGenerationType="class">
+        <attribute name="city" optional="YES" attributeType="String" customClassName="[WeatherModelEntity]"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="city"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
     <entity name="HourlyWeatherEntity" representedClassName="HourlyWeatherEntity" syncable="YES" codeGenerationType="class">
         <attribute name="date" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="temperature" optional="YES" attributeType="String"/>

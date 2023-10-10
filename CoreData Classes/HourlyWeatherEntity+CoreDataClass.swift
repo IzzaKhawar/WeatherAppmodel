@@ -10,6 +10,6 @@ import Foundation
 import CoreData
 
 @objc(HourlyWeatherEntity)
-public class HourlyWeatherEntity: NSManagedObject {
+public class HourlyWeatherEntity: NSManagedObject , Codable{
 
 }

@@ -1,8 +1,8 @@
 //
 //  WeatherModelEntity+CoreDataClass.swift
-//  WeatherApp
+//  
 //
-//  Created by apple on 10/4/23.
+//  Created by apple on 10/9/23.
 //
 //
 

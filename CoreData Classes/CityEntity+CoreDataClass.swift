@@ -10,6 +10,6 @@ import Foundation
 import CoreData
 
 @objc(CityEntity)
-public class CityEntity: NSManagedObject {
+public class CityEntity: NSManagedObject , Codable{
 
 }

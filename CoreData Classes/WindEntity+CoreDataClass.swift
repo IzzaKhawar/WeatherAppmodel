@@ -10,6 +10,6 @@ import Foundation
 import CoreData
 
 @objc(WindEntity)
-public class WindEntity: NSManagedObject {
+public class WindEntity: NSManagedObject , Codable{
 
 }

@@ -10,6 +10,6 @@ import Foundation
 import CoreData
 
 @objc(SysEntity)
-public class SysEntity: NSManagedObject {
+public class SysEntity: NSManagedObject , Codable{
 
 }

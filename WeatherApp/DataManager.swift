@@ -8,8 +8,10 @@
 import CoreData
 import UIKit
 
-open class DataManager: NSObject {
-    public static let sharedInstance = DataManager()
+
+
+class DataManager: NSObject {
+    static let sharedInstance = DataManager()
     @Published var weatherModels: [WeatherModelEntity] = []
 
     
@@ -23,7 +25,8 @@ open class DataManager: NSObject {
         return container
     }()
     
-    private override init() {}
+    private override init() {
+    }
     
     private func getContext() -> NSManagedObjectContext? {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return nil }
@@ -32,7 +35,7 @@ open class DataManager: NSObject {
     
     func retrieveUser() -> NSManagedObject? {
         guard let managedContext = getContext() else { return nil }
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "USER")
         
         do {
             let result = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
@@ -46,7 +49,7 @@ open class DataManager: NSObject {
             return nil
         }
     }
-    private func loadPersons() {
+    private func loadWeathers() {
         let context = persistentContainer.viewContext
 
         let fetchRequest = NSFetchRequest<WeatherModelEntity>(entityName: "WeatherModelEntity")
@@ -199,13 +202,44 @@ open class DataManager: NSObject {
         }
     }
     
+    func fetchFavWeather() -> [WeatherModelEntity] {
+        let context = persistentContainer.viewContext
+        var WeatherData = [WeatherModelEntity]()
+        do {
+            WeatherData =
+                try context.fetch(WeatherModelEntity.fetchRequest())
+        } catch {
+            print("couldnt fetch")
+        }
+        return WeatherData
+    }
     
     
     
     
     
-    
-    
+//    func saveWeatherModelToCoreData(_ weather: WeatherModel) -> Bool {
+////           print(NSStringFromClass(type(of: weather)))
+//           guard let managedContext = getContext() else { return false}
+//           guard let user = retrieveUser() else { return false}
+//           
+//           var weathers: [WeatherModel] = []
+//           if let pastWeathers = user.value(forKey: "weathers") as? [WeatherModel] {
+//               weathers += pastWeathers
+//           }
+//        weathers.append(weather)
+//           user.setValue(weathers, forKey: "weathers")
+//           
+//           do {
+//               print("Saving session...")
+//               try managedContext.save()
+//               return true
+//           } catch let error as NSError {
+//               print("Failed to save session data! \(error): \(error.userInfo)")
+//               return false
+//           }
+//       }
+
    
     
     
@@ -216,7 +250,7 @@ open class DataManager: NSObject {
 extension DataManager {
     func createUser() {
         guard let managedContext = getContext() else { return }
-        let userEntity = NSEntityDescription.entity(forEntityName: "User", in: managedContext)!
+        let userEntity = NSEntityDescription.entity(forEntityName: "USER", in: managedContext)!
         _ = NSManagedObject(entity: userEntity, insertInto: managedContext)
 
         do {

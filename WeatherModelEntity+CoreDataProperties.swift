@@ -1,8 +1,8 @@
 //
 //  WeatherModelEntity+CoreDataProperties.swift
-//  WeatherApp
+//  
 //
-//  Created by apple on 10/4/23.
+//  Created by apple on 10/9/23.
 //
 //
 
@@ -16,47 +16,14 @@ extension WeatherModelEntity {
         return NSFetchRequest<WeatherModelEntity>(entityName: "WeatherModelEntity")
     }
 
+    @NSManaged public var cnt: Int16
     @NSManaged public var cod: String?
     @NSManaged public var message: Int16
-    @NSManaged public var cnt: Int16
     @NSManaged public var city: CityEntity?
-    @NSManaged public var list: NSSet?
-    @NSManaged public var hourlyWeather: NSSet?
     @NSManaged public var dailyWeather: NSSet?
-
-}
-
-// MARK: Generated accessors for list
-extension WeatherModelEntity {
-
-    @objc(addListObject:)
-    @NSManaged public func addToList(_ value: ListEntity)
-
-    @objc(removeListObject:)
-    @NSManaged public func removeFromList(_ value: ListEntity)
-
-    @objc(addList:)
-    @NSManaged public func addToList(_ values: NSSet)
-
-    @objc(removeList:)
-    @NSManaged public func removeFromList(_ values: NSSet)
-
-}
-
-// MARK: Generated accessors for hourlyWeather
-extension WeatherModelEntity {
-
-    @objc(addHourlyWeatherObject:)
-    @NSManaged public func addToHourlyWeather(_ value: HourlyWeatherEntity)
-
-    @objc(removeHourlyWeatherObject:)
-    @NSManaged public func removeFromHourlyWeather(_ value: HourlyWeatherEntity)
-
-    @objc(addHourlyWeather:)
-    @NSManaged public func addToHourlyWeather(_ values: NSSet)
-
-    @objc(removeHourlyWeather:)
-    @NSManaged public func removeFromHourlyWeather(_ values: NSSet)
+    @NSManaged public var hourlyWeather: NSSet?
+    @NSManaged public var list: NSSet?
+   
 
 }
 
@@ -77,6 +44,36 @@ extension WeatherModelEntity {
 
 }
 
-extension WeatherModelEntity : Identifiable {
+// MARK: Generated accessors for hourlyWeather
+extension WeatherModelEntity {
+
+    @objc(addHourlyWeatherObject:)
+    @NSManaged public func addToHourlyWeather(_ value: HourlyWeatherEntity)
+
+    @objc(removeHourlyWeatherObject:)
+    @NSManaged public func removeFromHourlyWeather(_ value: HourlyWeatherEntity)
+
+    @objc(addHourlyWeather:)
+    @NSManaged public func addToHourlyWeather(_ values: NSSet)
+
+    @objc(removeHourlyWeather:)
+    @NSManaged public func removeFromHourlyWeather(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for list
+extension WeatherModelEntity {
+
+    @objc(addListObject:)
+    @NSManaged public func addToList(_ value: ListEntity)
+
+    @objc(removeListObject:)
+    @NSManaged public func removeFromList(_ value: ListEntity)
+
+    @objc(addList:)
+    @NSManaged public func addToList(_ values: NSSet)
+
+    @objc(removeList:)
+    @NSManaged public func removeFromList(_ values: NSSet)
 
 }

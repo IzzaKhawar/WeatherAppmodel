@@ -10,6 +10,6 @@ import Foundation
 import CoreData
 
 @objc(CloudsEntity)
-public class CloudsEntity: NSManagedObject {
+public class CloudsEntity: NSManagedObject , Codable{
 
 }

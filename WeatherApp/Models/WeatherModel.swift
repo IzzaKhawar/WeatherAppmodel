@@ -79,7 +79,6 @@ struct WeatherModel : Codable {
     }
     
     
-    
     enum CodingKeys: String, CodingKey {
         
         case cod = "cod"
