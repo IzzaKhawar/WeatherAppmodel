@@ -97,7 +97,7 @@ struct ContentView: View {
                 .background(
                     LinearGradient(
                         gradient: Gradient(
-                            colors: [Color.color, Color.grayish]
+                            colors: [Color.color, Color.black]
                         ),
                         startPoint: .top,
                         endPoint: .bottom
@@ -207,7 +207,7 @@ struct WeatherCard: View {
     @State private var navigateToWeatherView = false
     @State private var cardToDelete: String? = nil
     @State private var isDeleteButtonVisible = false
-
+    @State private var isDeleted = false
     var body: some View {
 
         ForEach(CoreData, id: \.city?.id) { model in
@@ -247,9 +247,13 @@ struct WeatherCard: View {
                 
                 .padding()
                 .background(
-                    ZStack {
-                        Color.teal
-                    }
+                    LinearGradient(
+                        gradient: Gradient(
+                            colors: [Color.color, Color.gray]
+                        ),
+                        startPoint: .top,
+                        endPoint: .bottom
+                    ).ignoresSafeArea()
                 )
                 .cornerRadius(16)
                 .frame(height: 100)
@@ -264,21 +268,23 @@ struct WeatherCard: View {
                         }
                         .onEnded { _ in
                             offset = .zero
-                            if let cardToDelete = cardToDelete, let index = CoreData.firstIndex(where: { $0.city?.name == cardToDelete }) {
-                                CoreData.remove(at: index)
-                                 let cityname = cardToDelete
-                                    DataManager.sharedInstance.deleteFavWeather(name: cityname)
-                                
+                            if isDeleted{
+                                if let cardToDelete = cardToDelete, let index = CoreData.firstIndex(where: { $0.city?.name == cardToDelete }) {
+                                    CoreData.remove(at: index)
+                                    let cityname = cardToDelete
+                                    isDeleted = DataManager.sharedInstance.deleteFavWeather(name: cityname)
+                                     
+                                }
+                                cardToDelete = nil
+                                isDeleteButtonVisible = false // Hide delete button after sliding
                             }
-                            cardToDelete = nil
-                            isDeleteButtonVisible = false // Hide delete button after sliding
                         }
                 )
 
                 if cardToDelete == model.city?.name {
                     Button(action: {
                         if let cityname = model.city?.name {
-                            DataManager.sharedInstance.deleteFavWeather(name: cityname)
+                            isDeleted = DataManager.sharedInstance.deleteFavWeather(name: cityname)
                         }
                         CoreData.removeAll { entity in
                             entity.city?.name == model.city?.name

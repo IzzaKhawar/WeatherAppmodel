@@ -5,78 +5,95 @@
 //  Created by apple on 9/27/23.
 //
 import SwiftUI
-
 struct WeatherView: View {
     @State var modelData: WeatherModel?
     @State var selectedUnits: Units?
     @State private var isSaved: Bool = false
+    @State private var isDelete: Bool = false
+    @State private var favWeather: [FavWeather] = DataManager.sharedInstance.fetchFavWeather()
+    
     var body: some View {
         NavigationView{
-           
-                VStack (spacing: -4){
-                    if let model = modelData, let unitSelected = selectedUnits {
-                        WeatherHeader(model: model, selectedUnits: unitSelected)
-                        
-                        HourlyForecast(model: model , selectedUnits: unitSelected)
-                        
-                        DailyForecast(model: model, selectedUnits: unitSelected)
-                        
-                            .background(Color.grayish)
-                            .cornerRadius(15.0)
-                            .padding()
-                        
-                        
-                    } else {
-                        Text("Data Not Loaded")
-                            .fontWeight(.bold)
-                            .font(.headline)
-                    }
-                    
-                }
-                .frame(maxWidth: .infinity)
-                .background(
-                    LinearGradient(
-                        gradient: Gradient(colors: [Color.color, Color.liner]),
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                    .edgesIgnoringSafeArea([.top, .bottom])
-                )
-                .foregroundColor(.white)
             
+            VStack (spacing: -4){
+                if let model = modelData, let unitSelected = selectedUnits {
+                    WeatherHeader(model: model, selectedUnits: unitSelected)
+                    
+                    HourlyForecast(model: model , selectedUnits: unitSelected)
+                    
+                    DailyForecast(model: model, selectedUnits: unitSelected)
+                } else {
+                    Text("Data Not Loaded")
+                        .fontWeight(.bold)
+                        .font(.headline)
+                }
+                
+            }
+            .frame(maxWidth: .infinity)
+            .background(
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.color, Color.black]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .edgesIgnoringSafeArea([.top, .bottom])
+            )
+            .foregroundColor(.white)
+            .onAppear {
+                favWeather = DataManager.sharedInstance.fetchFavWeather()
+                isSaved = isCityInFavWeather(cityName: modelData?.city?.name)
+            }
             
             
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-
+                
                 Button {
                     if isSaved {
                         if let Cityname = modelData?.city?.name {
-                            isSaved = !DataManager.sharedInstance.deleteFavWeather(name: Cityname)
+                            isDelete = !DataManager.sharedInstance.deleteFavWeather(name: Cityname)
+                            favWeather = DataManager.sharedInstance.fetchFavWeather()
+                            isSaved = isCityInFavWeather(cityName: modelData?.city?.name)
                         }
                     } else {
                         if let name = modelData?.city?.name {
                             isSaved = DataManager.sharedInstance.saveFavWeather(name)
+                            favWeather = DataManager.sharedInstance.fetchFavWeather()
+                            isSaved = isCityInFavWeather(cityName: modelData?.city?.name)
                         }
                     }
                 }
-                    label: {
-                        HStack {
-                            Text("Fav List")
-                            if isSaved {
-                                Image(systemName: "heart.fill")
-                            }
-                            else{
-                                Image(systemName: "heart")
-                            }
-                                
+                label: {
+                    HStack {
+                        if isCityInFavWeather(cityName: modelData?.city?.name){
+                            Image(systemName: "heart.fill")
+                                .foregroundColor(.red)
+                        } 
+                        else if isSaved  {
+                            Image(systemName: "heart.fill")
+                                .foregroundColor(.red)
+                        }
+                        else if isDelete {
+                            Image(systemName: "heart")
+                                .foregroundColor(.red)
+                        }
+                        else {
+                            Image(systemName: "heart")
+                                .foregroundColor(.red)
                         }
                     }
-
+                }
+                
+                }
             }
         }
-        
+    
+    func isCityInFavWeather(cityName: String?) -> Bool {
+    
+        return favWeather.contains { fav in
+            return fav.city == cityName
+        }
     }
 }
 
