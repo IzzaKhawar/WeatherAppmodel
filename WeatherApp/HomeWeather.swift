@@ -14,14 +14,14 @@ struct ContentView: View {
     @State var searchText = ""
     @State var isFetchingWeather : Bool = false
     let configManager = ConfigManager()
-//    @State var model : WeatherModel?
+    //    @State var model : WeatherModel?
     @StateObject var store = StoreManager.shared
     @State private var favWeather: [FavWeather] = DataManager.sharedInstance.fetchFavWeather()
     @State private var DATAMODEL: [WeatherModel] = []
     @State private var navigateToWeatherView = false
     @State private var Selection : Units = .metric
     @State private var isEditing = false
-
+    
     init() {
         // Use this if NavigationBarTitle is with Large Font
         UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]
@@ -64,25 +64,25 @@ struct ContentView: View {
                 }
                 ScrollView{
                     ForEach(DATAMODEL, id: \.city?.id ) { model in
-                        WeatherCard(CoreData: [model], UnitSelected: store.selectedUnit, isDeleteButtonVisible: isEditing)
-
+                        WeatherCard(CoreData: [model], UnitSelected: store.selectedUnit)
+                        
                     }
                 }
-                    if store.isFetchingWeather {
-                        Spacer()
-                        ProgressView()
-                            .tint(.white)
-                    } else {
-                        
-                        if let weather = store.weatherData {
-                            NavigationLink("",destination: WeatherView(modelData: store.weatherData , selectedUnits: store.selectedUnit), isActive: $navigateToWeatherView)
-                                .hidden()
-                            
-                            
-                        }
-                    }
+                if store.isFetchingWeather {
                     Spacer()
+                    ProgressView()
+                        .tint(.white)
+                } else {
                     
+                    if let weather = store.weatherData {
+                        NavigationLink("",destination: WeatherView(modelData: store.weatherData , selectedUnits: store.selectedUnit), isActive: $navigateToWeatherView)
+                            .hidden()
+                        
+                        
+                    }
+                }
+                Spacer()
+                
                 
                 
                 //                    List(coreModel ?? [], id: \WeatherModelEntity.city?.id) { coreDataItem in
@@ -112,7 +112,7 @@ struct ContentView: View {
                             Button("Edit List", systemImage: isEditing ? "pencil.circle.fill" : "pencil") {
                                 isEditing.toggle() // Toggle the editing mode
                             }
-
+                            
                             
                             Button {
                                 store.selectedUnit = .imperial
@@ -164,19 +164,21 @@ struct ContentView: View {
                 }
                 .onAppear(perform: onAppear)
                 .navigationBarTitle("Weather", displayMode: .large)
-               
-                  
+            
+            
             
         }
     }
     private func onAppear(){
         DATAMODEL.removeAll()
+        
         getData()
     }
     
     private func getData() {
-       
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.03) {
+            
             favWeather = DataManager.sharedInstance.fetchFavWeather()
             
             for fav in favWeather {
@@ -196,24 +198,25 @@ struct ContentView: View {
             }
         }
     }
-
+    
 }
 
 
 
 struct WeatherCard: View {
     @State var CoreData: [WeatherModel]
-
+    
     @StateObject var store = StoreManager.shared
     @State  var UnitSelected: Units?
     let configManager = ConfigManager()
     @State private var offset: CGSize = .zero
     @State private var navigateToWeatherView = false
     @State private var cardToDelete: String? = nil
-    @State var isDeleteButtonVisible :Bool
+    @State var isDeleteButtonVisible :Bool = false
     @State private var isDeleted = false
+    
     var body: some View {
-
+        
         ForEach(CoreData, id: \.city?.id) { model in
             HStack {
                 HStack {
@@ -227,7 +230,7 @@ struct WeatherCard: View {
                         Spacer()
                         Text(model.list?.first?.weather?.first?.description ?? "")
                             .font(.caption)
-
+                        
                     }
                     Spacer()
                     VStack(alignment: .trailing) {
@@ -236,15 +239,15 @@ struct WeatherCard: View {
                         Spacer()
                         Text("H: \(Int(Double(model.list?.first?.main?.temp_max ?? "0") ?? 0))\(UnitSelected == .metric ? "°C" : "°F")  L: \(Int(Double(model.list?.first?.main?.temp_min ?? "0") ?? 0))\(UnitSelected == .metric ? "°C" : "°F")")
                             .font(.footnote)
-
+                        
                     }
                     
-                        
-                        Image(systemName: "chevron.forward")
-                            .foregroundColor(Color.white)
-                            .onTapGesture {
-                                navigateToWeatherView = true
-                            }
+                    
+                    Image(systemName: "chevron.forward")
+                        .foregroundColor(Color.white)
+                        .onTapGesture {
+                            navigateToWeatherView = true
+                        }
                     NavigationLink("" , destination:  WeatherView(modelData: model, selectedUnits: UnitSelected), isActive: $navigateToWeatherView)
                     
                 }
@@ -261,30 +264,38 @@ struct WeatherCard: View {
                 )
                 .cornerRadius(16)
                 .frame(height: 100)
+                
                 .foregroundColor(.white)
-
+                
                 .gesture(
                     DragGesture()
                         .onChanged { gesture in
                             offset = gesture.translation
                             cardToDelete = model.city?.name
-                            isDeleteButtonVisible = true // Show delete button when sliding
+                            if gesture.translation.width < 0 {
+                                // Swiping from right to left
+                                isDeleteButtonVisible = true // Show delete button
+                            } else {
+                                withAnimation {
+                                    isDeleteButtonVisible = false
+                                    cardToDelete = nil
+                                    offset = .zero
+                                }
+                            }
                         }
-                        .onEnded { _ in
+                        .onEnded { gesture in
                             offset = .zero
-                            if isDeleted{
+                            if isDeleted {
                                 if let cardToDelete = cardToDelete, let index = CoreData.firstIndex(where: { $0.city?.name == cardToDelete }) {
                                     CoreData.remove(at: index)
                                     let cityname = cardToDelete
                                     isDeleted = DataManager.sharedInstance.deleteFavWeather(name: cityname)
-                                     
                                 }
                                 cardToDelete = nil
-                                isDeleteButtonVisible = false // Hide delete button after sliding
+                                isDeleteButtonVisible = false
                             }
                         }
                 )
-
                 if cardToDelete == model.city?.name {
                     Button(action: {
                         if let cityname = model.city?.name {
@@ -294,27 +305,27 @@ struct WeatherCard: View {
                             entity.city?.name == model.city?.name
                         }
                         cardToDelete = nil
-                        isDeleteButtonVisible = false // Hide delete button after clicking
+                        isDeleteButtonVisible = false
                     }) {
                         Text("Delete")
                             .foregroundColor(.white)
-                            .frame(height: 100)
+                            .frame(width : 60,height: 100)
                             .background(Color.red)
                             .cornerRadius(8)
                     }
-                    .opacity(isDeleteButtonVisible ? 1.0 : 0.0) // Show delete button
+                    .scaleEffect(isDeleteButtonVisible ? 1.0 : 0.0)
                 }
             }
         }
         .padding(.horizontal)
     }
-
+    
     func GetTime() -> String {
         let currentDate = Date()
         let timeFormatter = DateFormatter()
         timeFormatter.dateFormat = "h:mm a"
         let currentTimeString = timeFormatter.string(from: currentDate)
-
+        
         return currentTimeString
     }
 }

@@ -216,14 +216,21 @@ class DataManager: NSObject {
     
     func fetchFavWeather() -> [FavWeather] {
         let context = persistentContainer.viewContext
-        var favCity = [FavWeather]()
-        do {
-            favCity =
-            try context.fetch(FavWeather.fetchRequest())
-        } catch {
-            print("couldn't fetch")
-        }
-        return favCity
+            var favCity = [FavWeather]()
+            
+            let fetchRequest: NSFetchRequest<FavWeather> = FavWeather.fetchRequest()
+            
+            // Create a sort descriptor to sort by the "city" attribute
+            let sortDescriptor = NSSortDescriptor(key: "city", ascending: true)
+            fetchRequest.sortDescriptors = [sortDescriptor]
+            
+            do {
+                favCity = try context.fetch(fetchRequest)
+            } catch {
+                print("Couldn't fetch sorted data: \(error)")
+            }
+            
+            return favCity
     }
     
     
