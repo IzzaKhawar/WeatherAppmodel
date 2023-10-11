@@ -14,14 +14,14 @@ struct ContentView: View {
     @State var searchText = ""
     @State var isFetchingWeather : Bool = false
     let configManager = ConfigManager()
-    @State var model : WeatherModel?
-    //    @State var coreModel : [WeatherModelEntity]?
+//    @State var model : WeatherModel?
     @StateObject var store = StoreManager.shared
     @State private var favWeather: [FavWeather] = DataManager.sharedInstance.fetchFavWeather()
-    @State private var FavCity: [String] = []
     @State private var DATAMODEL: [WeatherModel] = []
     @State private var navigateToWeatherView = false
     @State private var Selection : Units = .metric
+    @State private var isEditing = false
+
     init() {
         // Use this if NavigationBarTitle is with Large Font
         UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]
@@ -64,7 +64,8 @@ struct ContentView: View {
                 }
                 ScrollView{
                     ForEach(DATAMODEL, id: \.city?.id ) { model in
-                        WeatherCard(CoreData: [model], UnitSelected: store.selectedUnit)
+                        WeatherCard(CoreData: [model], UnitSelected: store.selectedUnit, isDeleteButtonVisible: isEditing)
+
                     }
                 }
                     if store.isFetchingWeather {
@@ -97,7 +98,7 @@ struct ContentView: View {
                 .background(
                     LinearGradient(
                         gradient: Gradient(
-                            colors: [Color.color, Color.black]
+                            colors: [Color.black, Color.black]
                         ),
                         startPoint: .top,
                         endPoint: .bottom
@@ -108,7 +109,10 @@ struct ContentView: View {
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Menu {
-                            Button("Edit List", systemImage: "pencil") {}
+                            Button("Edit List", systemImage: isEditing ? "pencil.circle.fill" : "pencil") {
+                                isEditing.toggle() // Toggle the editing mode
+                            }
+
                             
                             Button {
                                 store.selectedUnit = .imperial
@@ -206,7 +210,7 @@ struct WeatherCard: View {
     @State private var offset: CGSize = .zero
     @State private var navigateToWeatherView = false
     @State private var cardToDelete: String? = nil
-    @State private var isDeleteButtonVisible = false
+    @State var isDeleteButtonVisible :Bool
     @State private var isDeleted = false
     var body: some View {
 

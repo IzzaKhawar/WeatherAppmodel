@@ -32,7 +32,7 @@ struct WeatherView: View {
             .frame(maxWidth: .infinity)
             .background(
                 LinearGradient(
-                    gradient: Gradient(colors: [Color.color, Color.black]),
+                    gradient: Gradient(colors: [Color.color, Color.gray]),
                     startPoint: .top,
                     endPoint: .bottom
                 )
@@ -103,16 +103,17 @@ struct WeatherHeader: View {
     var body: some View {
         VStack(alignment: .center) {
             Text(model.city?.name ?? "")
-                .font(.system(size: 34))
-                .fontWeight(.bold)
+                .font(.system(size: 30))
+                .fontWeight(.semibold)
             
-            Text("\(model.list?.first?.main?.temp ?? "0")\(selectedUnits == .metric ? "°C" : "°F")")
+            Text("\(model.list?.first?.main?.temp ?? "0")°")
+                .font(.system(size: 102))
             
-            Text(model.list?.first?.weather?.first?.description ?? "")
+            Text(model.list?.first?.weather?.first?.main ?? "")
+                .font(.title3)
             
-            Text("H: \(Int(Double(model.list?.first?.main?.temp_max ?? "0") ?? 0))\(selectedUnits == .metric ? "°C" : "°F") - L: \(Int(Double(model.list?.first?.main?.temp_min ?? "0") ?? 0))\(selectedUnits == .metric ? "°C" : "°F")")
+            Text("H: \(Int(Double(model.list?.first?.main?.temp_max ?? "0") ?? 0))\(selectedUnits == .metric ? "°C" : "°F")   L: \(Int(Double(model.list?.first?.main?.temp_min ?? "0") ?? 0))\(selectedUnits == .metric ? "°C" : "°F")")
                 .font(.footnote)
-                .font(.headline)
         }
         
     }
@@ -138,6 +139,9 @@ struct DailyForecast: View {
                 VStack{
                     ForEach(model.dailyWeather, id: \.date) { dailyData in
                         DailyWeatherView(dailymodel: dailyData , selectedUnits: selectedUnits)
+                        Divider()
+                            .background(Color.primary)
+                            .padding([.leading, .trailing], 10)
                     }
                 }
                 .padding(.horizontal)
@@ -169,8 +173,7 @@ struct DailyWeatherView: View {
             
             Text("\(dailymodel.minTemperature )\(selectedUnits == .metric ? "°C" : "°F" ) - \(dailymodel.maxTemperature  )\(selectedUnits == .metric ? "°C" : "°F")" )
         }
-        Divider()
-        
+                
         
     }
 }
@@ -182,6 +185,13 @@ struct HourlyForecast: View {
     var body: some View {
         VStack(alignment: .leading, spacing: nil) {
             
+//            Text(model.list?.first?.weather?.first?.description ?? "")
+//                .font(.headline)
+//                .padding([.top, .leading])
+//            Divider()
+//                .background(Color.primary)
+//                .padding([.leading, .trailing], 10)
+           
             Label("48-HOUR FORECAST", systemImage: "clock")
                 .font(.system(.subheadline, design: .rounded))
                 .foregroundStyle(.secondary)
