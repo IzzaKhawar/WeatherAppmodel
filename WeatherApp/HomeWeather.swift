@@ -159,7 +159,6 @@ struct ContentView: View {
                     }
                 }
                 .onAppear(perform: onAppear)
-                .onDisappear(perform: onDisappear)
                 .navigationBarTitle("Weather", displayMode: .large)
                
                   
@@ -167,10 +166,12 @@ struct ContentView: View {
         }
     }
     private func onAppear(){
+        DATAMODEL.removeAll()
         getData()
     }
     
     private func getData() {
+       
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.03) {
             favWeather = DataManager.sharedInstance.fetchFavWeather()
             
@@ -191,11 +192,7 @@ struct ContentView: View {
             }
         }
     }
-    private func onDisappear() {
-            
-            DATAMODEL.removeAll()
-        }
-    
+
 }
 
 
@@ -207,7 +204,7 @@ struct WeatherCard: View {
     @State  var UnitSelected: Units?
     let configManager = ConfigManager()
     @State private var offset: CGSize = .zero
-
+    @State private var navigateToWeatherView = false
     @State private var cardToDelete: String? = nil
     @State private var isDeleteButtonVisible = false
 
@@ -237,11 +234,17 @@ struct WeatherCard: View {
                             .font(.footnote)
 
                     }
-                    NavigationLink(destination: WeatherView(modelData: model, selectedUnits: UnitSelected)) {
+                    
+                        
                         Image(systemName: "chevron.forward")
                             .foregroundColor(Color.white)
-                    }
+                            .onTapGesture {
+                                navigateToWeatherView = true
+                            }
+                    NavigationLink("" , destination:  WeatherView(modelData: model, selectedUnits: UnitSelected), isActive: $navigateToWeatherView)
+                    
                 }
+                
                 .padding()
                 .background(
                     ZStack {
