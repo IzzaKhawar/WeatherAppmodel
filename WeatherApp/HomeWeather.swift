@@ -124,6 +124,7 @@ struct ContentView: View {
                                     print(error)
                                 })
                                 self.isFetchingWeather = store.isFetchingWeather
+
                                 getData()
                                 
                             } label: {
@@ -162,14 +163,16 @@ struct ContentView: View {
                         }
                     }
                 }
-                .onAppear(perform: getData )
+
+                .onAppear(perform:  getData )
+
                 .navigationBarTitle("Weather", displayMode: .large)
             
             
             
         }
     }
-  
+
     private func getData() {
         DATAMODEL.removeAll()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.03) {
