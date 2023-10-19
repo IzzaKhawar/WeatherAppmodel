@@ -377,6 +377,3 @@ struct Wind : Codable {
 }
 
 
-//extension WeatherModel : Identifiable {
-//
-//}

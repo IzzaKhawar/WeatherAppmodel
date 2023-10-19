@@ -8,10 +8,7 @@ import SwiftUI
 struct WeatherView: View {
     @State var modelData: WeatherModel?
     @State var selectedUnits: Units?
-    @State private var isSaved: Bool = false
-    @State private var isDelete: Bool = false
-    @State private var favWeather: [FavWeather] = DataManager.sharedInstance.fetchFavWeather()
-    
+   
     var body: some View {
         NavigationView{
             
@@ -39,62 +36,15 @@ struct WeatherView: View {
                 .edgesIgnoringSafeArea([.top, .bottom])
             )
             .foregroundColor(.white)
-            .onAppear {
-                favWeather = DataManager.sharedInstance.fetchFavWeather()
-                isSaved = isCityInFavWeather(cityName: modelData?.city?.name)
-            }
+            
             
             
         }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                
-                Button {
-                    if isSaved {
-                        if let Cityname = modelData?.city?.name {
-                            isDelete = !DataManager.sharedInstance.deleteFavWeather(name: Cityname)
-                            favWeather = DataManager.sharedInstance.fetchFavWeather()
-                            isSaved = isCityInFavWeather(cityName: modelData?.city?.name)
-                        }
-                    } else {
-                        if let name = modelData?.city?.name {
-                            isSaved = DataManager.sharedInstance.saveFavWeather(name)
-                            favWeather = DataManager.sharedInstance.fetchFavWeather()
-                            isSaved = isCityInFavWeather(cityName: modelData?.city?.name)
-                        }
-                    }
-                }
-                label: {
-                    HStack {
-                        if isCityInFavWeather(cityName: modelData?.city?.name){
-                            Image(systemName: "heart.fill")
-                                .foregroundColor(.red)
-                        } 
-                        else if isSaved  {
-                            Image(systemName: "heart.fill")
-                                .foregroundColor(.red)
-                        }
-                        else if isDelete {
-                            Image(systemName: "heart")
-                                .foregroundColor(.red)
-                        }
-                        else {
-                            Image(systemName: "heart")
-                                .foregroundColor(.red)
-                        }
-                    }
-                }
-                
-                }
-            }
+         
         }
     
-    func isCityInFavWeather(cityName: String?) -> Bool {
     
-        return favWeather.contains { fav in
-            return fav.city == cityName
-        }
-    }
+    
 }
 
 struct WeatherHeader: View {
