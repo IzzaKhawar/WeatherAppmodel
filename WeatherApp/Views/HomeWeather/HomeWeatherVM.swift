@@ -18,9 +18,6 @@ class HomeWeatherViewModel: ObservableObject {
     var store = StoreManager.shared
     let configManager = ConfigManager()
             
-        
-        
-        
     init() {
         UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
@@ -59,60 +56,26 @@ class HomeWeatherViewModel: ObservableObject {
         }
     }
     
-}
-
-
+    func setUnitToMetric() {
+        store.selectedUnit = .metric
+        Selection = .metric
+        configManager.checkConnection()
+        store.getWeather(success: {_ in  }
+         , failure: { error in
+            print(error)
+        })
+    }
     
-    struct FahrenheitButton{
-        @ObservedObject var viewModel = HomeWeatherViewModel()
-
-//        Button {
-//            viewModel.store.selectedUnit = .imperial
-//            viewModel.Selection = .imperial
-//            viewModel.configManager.checkConnection()
-//            viewModel.store.getWeather(success: { weatherData in
-//                // Handle successful response with weatherData
-//            }, failure: { error in
-//                print(error)
-//            })
-//            
-//            viewModel.getData()
-//            
-//        }
-//    label: {
-//            HStack {
-//                Text("Fahrenheit")
-//                if viewModel.store.selectedUnit.rawValue == "imperial"{
-//                    
-//                    Image(systemName: "checkmark.circle")
-//                }
-//            }
-//        }
+    func setUnitToImperial() {
+        store.selectedUnit = .imperial
+        Selection = .imperial
+        configManager.checkConnection()
+        store.getWeather(success: { _ in  }
+         , failure: { error in
+            print(error)
+        })
     }
-    struct CelciusButton{
-        @ObservedObject var viewModel = HomeWeatherViewModel()
-        
-        
-//        Button {
-//            viewModel.store.selectedUnit = .metric
-//            viewModel.Selection = .metric
-//            viewModel.configManager.checkConnection()
-//            viewModel.store.getWeather(success: { weatherData in
-//                // Handle successful response with weatherData
-//            }, failure: { error in
-//                print(error)
-//            })
-//                        viewModel.getData()
-//        }
-//    label: {
-//            HStack {
-//                Text("Celcius")
-//                if viewModel.store.selectedUnit.rawValue == "metric"{
-//                    Image(systemName: "checkmark.circle")
-//                }
-//                
-//            }
-//        }
-    }
+    
+}
 
 

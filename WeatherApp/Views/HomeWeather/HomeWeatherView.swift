@@ -38,9 +38,10 @@ struct ContentView: View {
                         .tint(.white)
                 }
                
-                else if viewModel.WeatherData != nil {
+                
+                else if let model =  viewModel.WeatherData{
                         
-                    NavigationLink("",destination: WeatherView(modelData: viewModel.WeatherData , selectedUnits: viewModel.store.selectedUnit), isActive: $viewModel.navigateToWeatherView)
+                    NavigationLink("",destination: WeatherView(modelData: model , selectedUnits: viewModel.store.selectedUnit), isActive: $viewModel.navigateToWeatherView)
                             .hidden()
                       
                 }
@@ -64,8 +65,29 @@ struct ContentView: View {
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Menu {
-//                            ContentView.FahrenheitButton
-//                            ContentView.CelciusButton
+                            Button {
+                                viewModel.setUnitToMetric()
+                            }
+                        label: {
+                                HStack {
+                                    Text("Celsius")
+                                    if viewModel.Selection == .metric {
+                                        Image(systemName: "checkmark.circle")
+                                    }
+                                }
+                            }
+                            Button {
+                                viewModel.setUnitToImperial()
+                            }
+                        label: {
+                            HStack {
+                                Text("Fahrenheit")
+                                if viewModel.Selection == .imperial {
+                                    Image(systemName: "checkmark.circle")
+                                }
+                            }
+                        }
+                            
                             
                         } label: {
                             Label("Menu", systemImage: "ellipsis.circle")
