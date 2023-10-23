@@ -26,6 +26,7 @@ class DetailedWeatherViewModel : ObservableObject {
 //            WeatherHeaderVM(model: modelData, selectedUnits: selectedUnits)
             HourlyForecastVM(model: modelData, selectedUnits: selectedUnits)
             DailyForecastVM(model: modelData, selectedUnits: selectedUnits)
+            store.isFetchingWeather = false
         }
     }
     

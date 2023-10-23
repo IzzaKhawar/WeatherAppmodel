@@ -36,6 +36,7 @@ struct ContentView: View {
                     Spacer()
                     ProgressView()
                         .tint(.white)
+                    
                 }
                
                 

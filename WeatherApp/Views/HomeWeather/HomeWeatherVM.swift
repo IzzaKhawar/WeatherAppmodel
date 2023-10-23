@@ -37,6 +37,7 @@ class HomeWeatherViewModel: ObservableObject {
             if ((WeatherData?.city?.name?.isEmpty) != nil){
                 WeatherViewVM(model: WeatherData!, selectedUnits: Selection)
             }
+            
             navigateToWeatherView = true
             self.searchText = ""
         } else if self.searchText.isEmpty {
@@ -44,6 +45,7 @@ class HomeWeatherViewModel: ObservableObject {
         }
     }
     func WeatherViewVM(model: WeatherModel, selectedUnits: Units){
+        store.isFetchingWeather = false
         DetailedWeatherViewModel(modelData: model, selectedUnits: selectedUnits)
     }
     
