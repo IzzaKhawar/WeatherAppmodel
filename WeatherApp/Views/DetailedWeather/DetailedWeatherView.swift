@@ -6,19 +6,18 @@
 //
 import SwiftUI
 struct WeatherView: View {
-    @State var modelData: WeatherModel?
-    @State var selectedUnits: Units?
+    @ObservedObject var viewModel: DetailedWeatherViewModel
    
     var body: some View {
         NavigationView{
             
             VStack (spacing: -4){
-                if let model = modelData, let unitSelected = selectedUnits {
-                    WeatherHeader(model: model, selectedUnits: unitSelected)
+                if let model = viewModel.modelData, let unitSelected = viewModel.selectedUnits {
                     
-                    HourlyForecast(model: model , selectedUnits: unitSelected)
-                    
-                    DailyForecast(model: model, selectedUnits: unitSelected)
+                    WeatherHeader(viewModel: DetailedWeatherViewModel(modelData: model, selectedUnits: unitSelected))
+                    HourlyForecast(viewModel: HourlyForecastViewModel(model: model, selectedUnits: unitSelected))
+                    DailyForecast(viewModel: DailyForecastViewModel(model: model, selectedUnits: unitSelected))
+
                 } else {
                     Text("Data Not Loaded")
                         .fontWeight(.bold)
@@ -48,21 +47,21 @@ struct WeatherView: View {
 }
 
 struct WeatherHeader: View {
-    var model: WeatherModel
-    let selectedUnits: Units
+    @ObservedObject var viewModel: DetailedWeatherViewModel
+
     var body: some View {
         VStack(alignment: .center) {
-            Text(model.city?.name ?? "")
+            Text(viewModel.modelData?.city?.name ?? "")
                 .font(.system(size: 30))
                 .fontWeight(.semibold)
             
-            Text("\(model.list?.first?.main?.temp ?? "0")°")
+            Text("\(viewModel.modelData?.list?.first?.main?.temp ?? "0")°")
                 .font(.system(size: 102))
             
-            Text(model.list?.first?.weather?.first?.main ?? "")
+            Text(viewModel.modelData?.list?.first?.weather?.first?.main ?? "")
                 .font(.title3)
             
-            Text("H: \(Int(Double(model.list?.first?.main?.temp_max ?? "0") ?? 0))\(selectedUnits == .metric ? "°C" : "°F")   L: \(Int(Double(model.list?.first?.main?.temp_min ?? "0") ?? 0))\(selectedUnits == .metric ? "°C" : "°F")")
+            Text("H: \(Int(Double(viewModel.modelData?.list?.first?.main?.temp_max ?? "0") ?? 0))\(viewModel.select)   L: \(Int(Double(viewModel.modelData?.list?.first?.main?.temp_min ?? "0") ?? 0))\(viewModel.select)")
                 .font(.footnote)
         }
         
@@ -72,8 +71,7 @@ struct WeatherHeader: View {
 
 
 struct DailyForecast: View {
-    var model: WeatherModel
-    let selectedUnits: Units
+    @ObservedObject var viewModel: DailyForecastViewModel
     var body: some View {
         VStack(alignment: .leading, spacing: nil) {
             Label("6-Days FORECAST", systemImage: "calendar")
@@ -87,12 +85,14 @@ struct DailyForecast: View {
             
             ScrollView(.vertical, showsIndicators: false) {
                 VStack{
-                    ForEach(model.dailyWeather, id: \.date) { dailyData in
-                        DailyWeatherView(dailymodel: dailyData , selectedUnits: selectedUnits)
+                    ForEach(viewModel.model.dailyWeather, id: \.date) { dailyData in
+                        
+                        DailyWeatherView(viewModel: DailyWeatherViewModel(dailyData: dailyData, selectedUnits: viewModel.selectedUnits))
                         Divider()
                             .background(Color.primary)
                             .padding([.leading, .trailing], 10)
                     }
+                    
                 }
                 .padding(.horizontal)
             }
@@ -105,23 +105,23 @@ struct DailyForecast: View {
 
 
 struct DailyWeatherView: View {
-    var dailymodel: DailyWeather
-    let selectedUnits: Units
+    @ObservedObject var viewModel: DailyWeatherViewModel
+
     var body: some View {
         
         HStack {
-            Text("\(dailymodel.date)")
+            Text("\(viewModel.dailymodel.date)")
                 .font(.subheadline)
             
             Spacer()
                 .frame(width: 30 , height: 35)
             
-            Image(systemName: "\(dailymodel.weatherMain)".lowercased())
+            Image(systemName: "\(viewModel.dailymodel.weatherMain)".lowercased())
                 .foregroundColor(.white)
             Spacer()
                 .frame(width: 30 , height: 35)
             
-            Text("\(dailymodel.minTemperature )\(selectedUnits == .metric ? "°C" : "°F" ) - \(dailymodel.maxTemperature  )\(selectedUnits == .metric ? "°C" : "°F")" )
+            Text("\(viewModel.dailymodel.minTemperature )\(viewModel.select) - \(viewModel.dailymodel.maxTemperature  )\(viewModel.select)" )
         }
                 
         
@@ -130,18 +130,11 @@ struct DailyWeatherView: View {
 
 
 struct HourlyForecast: View {
-    var model: WeatherModel
-    let selectedUnits: Units
+    @ObservedObject var viewModel: HourlyForecastViewModel
     var body: some View {
         VStack(alignment: .leading, spacing: nil) {
             
-//            Text(model.list?.first?.weather?.first?.description ?? "")
-//                .font(.headline)
-//                .padding([.top, .leading])
-//            Divider()
-//                .background(Color.primary)
-//                .padding([.leading, .trailing], 10)
-           
+         
             Label("48-HOUR FORECAST", systemImage: "clock")
                 .font(.system(.subheadline, design: .rounded))
                 .foregroundStyle(.secondary)
@@ -153,8 +146,9 @@ struct HourlyForecast: View {
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(alignment: .center, spacing: 10) {
-                    ForEach(model.hourlyWeather, id: \.timestamp) { hourlyData in
-                        HourlyWeatherView(hourlyData: hourlyData,selectedUnits: selectedUnits)
+                    ForEach(viewModel.model.hourlyWeather, id: \.timestamp) { hourlyData in
+                        HourlyWeatherView(viewModel: HourlyWeatherViewModel(hourlyData: hourlyData, selectedUnits: viewModel.selectedUnits))
+                        
                     }
                 }
                 .padding(.horizontal)
@@ -167,21 +161,21 @@ struct HourlyForecast: View {
 }
 
 struct HourlyWeatherView: View {
-    var hourlyData: HourlyWeather
-    let selectedUnits: Units
+    @ObservedObject var viewModel: HourlyWeatherViewModel
+    
     var body: some View {
         VStack {
-            Text(String(hourlyData.timestamp))
+            Text(String(viewModel.hourlyData.timestamp))
                 .font(.caption)
                 .foregroundColor(.white)
             Spacer()
                 .frame(width: 15 , height: 25)
             
-            Image(systemName: "\(hourlyData.weatherMain)".lowercased())
+            Image(systemName: "\(viewModel.hourlyData.weatherMain)".lowercased())
                 .foregroundColor(.white)
             Spacer()
                 .frame(width: 15 , height: 25)
-            Text("\(hourlyData.temperature)\(selectedUnits == .metric ? "°C" : "°F")")
+            Text("\(viewModel.hourlyData.temperature)\(viewModel.select)")
         }
         .padding(.vertical)
         .frame(width: 80)
@@ -190,6 +184,4 @@ struct HourlyWeatherView: View {
 }
 
 
-#Preview {
-    WeatherView( selectedUnits: Units.metric )
-}
+

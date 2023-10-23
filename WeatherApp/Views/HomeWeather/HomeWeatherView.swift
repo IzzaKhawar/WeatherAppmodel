@@ -11,7 +11,7 @@ import CoreData
 
 struct ContentView: View {
     @EnvironmentObject var viewModel: HomeWeatherViewModel
-    @EnvironmentObject var coordinator: WeatherCoordinator
+//    @EnvironmentObject var coordinator: WeatherCoordinator
 
     
     init() {}
@@ -41,7 +41,7 @@ struct ContentView: View {
                 
                 else if let model =  viewModel.WeatherData{
                         
-                    NavigationLink("",destination: WeatherView(modelData: model , selectedUnits: viewModel.store.selectedUnit), isActive: $viewModel.navigateToWeatherView)
+                    NavigationLink("",destination: WeatherView(viewModel: DetailedWeatherViewModel(modelData: model, selectedUnits: viewModel.Selection)), isActive: $viewModel.navigateToWeatherView)
                             .hidden()
                       
                 }
@@ -112,7 +112,7 @@ struct ContentView: View {
 #Preview {
     ContentView()
         .environmentObject(HomeWeatherViewModel())
-        .environmentObject(WeatherCoordinator())
+//        .environmentObject(WeatherCoordinator())
     
 }
 

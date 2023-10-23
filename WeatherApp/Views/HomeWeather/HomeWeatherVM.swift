@@ -21,6 +21,7 @@ class HomeWeatherViewModel: ObservableObject {
     init() {
         UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.white]
+        
     }
 
         
@@ -30,18 +31,21 @@ class HomeWeatherViewModel: ObservableObject {
             store.cityName = self.searchText
             store.getWeather(success: { response in
                 self.WeatherData = response
-                print(self.WeatherData?.city?.name)
             }, failure: { error in
                 print(error)
             })
-            
+            if ((WeatherData?.city?.name?.isEmpty) != nil){
+                WeatherViewVM(model: WeatherData!, selectedUnits: Selection)
+            }
             navigateToWeatherView = true
             self.searchText = ""
         } else if self.searchText.isEmpty {
             self.WeatherData = LocalStore.shared.getWeatherData()
         }
     }
-    
+    func WeatherViewVM(model: WeatherModel, selectedUnits: Units){
+        DetailedWeatherViewModel(modelData: model, selectedUnits: selectedUnits)
+    }
     
     func selectedUnits(unit: Units) {
         store.selectedUnit = unit
@@ -75,6 +79,7 @@ class HomeWeatherViewModel: ObservableObject {
             print(error)
         })
     }
+    
     
 }
 
