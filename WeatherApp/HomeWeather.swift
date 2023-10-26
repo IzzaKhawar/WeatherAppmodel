@@ -109,9 +109,9 @@ struct ContentView: View {
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Menu {
-                            Button("Edit List", systemImage: isEditing ? "pencil.circle.fill" : "pencil") {
-                                isEditing.toggle() // Toggle the editing mode
-                            }
+//                            Button("Edit List", systemImage: isEditing ? "pencil.circle.fill" : "pencil") {
+//                                isEditing.toggle() // Toggle the editing mode
+//                            }
                             
                             
                             Button {
@@ -124,7 +124,7 @@ struct ContentView: View {
                                     print(error)
                                 })
                                 self.isFetchingWeather = store.isFetchingWeather
-                                
+                                getData()
                                 
                             } label: {
                                 HStack {
@@ -145,7 +145,7 @@ struct ContentView: View {
                                     print(error)
                                 })
                                 self.isFetchingWeather = store.isFetchingWeather
-                                
+                                getData()
                             } label: {
                                 HStack {
                                     Text("Celcius")
@@ -162,21 +162,16 @@ struct ContentView: View {
                         }
                     }
                 }
-                .onAppear(perform: onAppear)
+                .onAppear(perform: getData )
                 .navigationBarTitle("Weather", displayMode: .large)
             
             
             
         }
     }
-    private func onAppear(){
-        DATAMODEL.removeAll()
-        
-        getData()
-    }
-    
+  
     private func getData() {
-        
+        DATAMODEL.removeAll()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.03) {
             
             favWeather = DataManager.sharedInstance.fetchFavWeather()
